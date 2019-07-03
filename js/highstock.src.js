@@ -28296,7 +28296,8 @@
                         isYTDButNotSelected = !isSelected;
                     } else if (type === 'all') {
                         isSameRange = baseAxis.max - baseAxis.min >= dataMax - dataMin;
-                        isAllButAlreadyShowingAll = !isSelected && selectedExists && isSameRange;
+                        /**2Commented code to ensure 'All' option is visible at all times */
+                        // isAllButAlreadyShowingAll = !isSelected && selectedExists && isSameRange;
                     }
                     // The new zoom area happens to match the range for a button - mark it selected.
                     // This happens when scrolling across an ordinal gap. It can be seen in the intraday
