@@ -1,9 +1,9 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * 3D features for Highcharts JS
  *
- * @license: www.highcharts.com/license
+ * License: www.highcharts.com/license
  */
 'use strict';
 (function (factory) {
@@ -1227,7 +1227,7 @@
         };
 
     });
-    _registerModule(_modules, 'parts-3d/Chart.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'parts-3d/Chart.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * (c) 2010-2019 Torstein Honsi
          *
@@ -1236,6 +1236,9 @@
          * License: www.highcharts.com/license
          */
 
+
+
+        var isArray = U.isArray;
 
 
         var addEvent = H.addEvent,
@@ -2925,7 +2928,7 @@
             var interpolated;
 
             if (this.pos < 1 &&
-                    (H.isArray(this.start) || H.isArray(this.end))) {
+                    (isArray(this.start) || isArray(this.end))) {
                 var start = this.start || [1, 0, 0, 1, 0, 0];
                 var end = this.end || [1, 0, 0, 1, 0, 0];
 

@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * Indicator series type for Highstock
  *
@@ -304,7 +304,7 @@
 
         return multipleLinesMixin;
     });
-    _registerModule(_modules, 'indicators/stochastic.src.js', [_modules['parts/Globals.js'], _modules['mixins/reduce-array.js'], _modules['mixins/multipe-lines.js']], function (H, reduceArrayMixin, multipleLinesMixin) {
+    _registerModule(_modules, 'indicators/stochastic.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/reduce-array.js'], _modules['mixins/multipe-lines.js']], function (H, U, reduceArrayMixin, multipleLinesMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -313,8 +313,10 @@
 
 
 
+        var isArray = U.isArray;
+
+
         var merge = H.merge,
-            isArray = H.isArray,
             SMA = H.seriesTypes.sma,
             getArrayExtremes = reduceArrayMixin.getArrayExtremes;
 

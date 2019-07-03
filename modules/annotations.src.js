@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Annotations module
  *
@@ -127,8 +127,6 @@
                 if (e.button === 2) {
                     return;
                 }
-
-                e.stopPropagation();
 
                 e = pointer.normalize(e);
                 prevChartX = e.chartX;
@@ -898,7 +896,10 @@
 
         return MockPoint;
     });
-    _registerModule(_modules, 'annotations/controllable/controllableMixin.js', [_modules['parts/Globals.js'], _modules['annotations/ControlPoint.js'], _modules['annotations/MockPoint.js']], function (H, ControlPoint, MockPoint) {
+    _registerModule(_modules, 'annotations/controllable/controllableMixin.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['annotations/ControlPoint.js'], _modules['annotations/MockPoint.js']], function (H, U, ControlPoint, MockPoint) {
+
+        var isString = U.isString;
+
 
         /**
          * It provides methods for handling points, control points
@@ -1058,7 +1059,7 @@
                             this,
                             pointOptions
                         );
-                    } else if (H.isString(pointOptions)) {
+                    } else if (isString(pointOptions)) {
                         point = this.chart.get(pointOptions) || null;
                     } else if (typeof pointOptions === 'function') {
                         var pointConfig = pointOptions.call(point, this);
@@ -1886,7 +1887,10 @@
 
         return ControllableCircle;
     });
-    _registerModule(_modules, 'annotations/controllable/ControllableLabel.js', [_modules['parts/Globals.js'], _modules['annotations/controllable/controllableMixin.js'], _modules['annotations/MockPoint.js']], function (H, controllableMixin, MockPoint) {
+    _registerModule(_modules, 'annotations/controllable/ControllableLabel.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['annotations/controllable/controllableMixin.js'], _modules['annotations/MockPoint.js']], function (H, U, controllableMixin, MockPoint) {
+
+        var isNumber = U.isNumber;
+
 
 
         /**
@@ -2119,7 +2123,14 @@
                         // Chart.options.annotations
                         annotationIndex = chart.annotations.indexOf(this.annotation),
                         chartAnnotations = chart.options.annotations,
-                        chartOptions = chartAnnotations[annotationIndex];
+                        chartOptions = chartAnnotations[annotationIndex],
+                        temp;
+
+                    if (chart.inverted) {
+                        temp = dx;
+                        dx = dy;
+                        dy = temp;
+                    }
 
                     // Local options:
                     this.options.x += dx;
@@ -2343,7 +2354,7 @@
                 yOffset,
                 lateral = w / 2;
 
-            if (H.isNumber(anchorX) && H.isNumber(anchorY)) {
+            if (isNumber(anchorX) && isNumber(anchorY)) {
 
                 path = ['M', anchorX, anchorY];
 
@@ -2471,7 +2482,7 @@
 
         return ControllableImage;
     });
-    _registerModule(_modules, 'annotations/annotations.src.js', [_modules['parts/Globals.js'], _modules['annotations/controllable/controllableMixin.js'], _modules['annotations/controllable/ControllableRect.js'], _modules['annotations/controllable/ControllableCircle.js'], _modules['annotations/controllable/ControllablePath.js'], _modules['annotations/controllable/ControllableImage.js'], _modules['annotations/controllable/ControllableLabel.js'], _modules['annotations/eventEmitterMixin.js'], _modules['annotations/MockPoint.js'], _modules['annotations/ControlPoint.js']], function (H, controllableMixin, ControllableRect, ControllableCircle, ControllablePath, ControllableImage, ControllableLabel, eventEmitterMixin, MockPoint, ControlPoint) {
+    _registerModule(_modules, 'annotations/annotations.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['annotations/controllable/controllableMixin.js'], _modules['annotations/controllable/ControllableRect.js'], _modules['annotations/controllable/ControllableCircle.js'], _modules['annotations/controllable/ControllablePath.js'], _modules['annotations/controllable/ControllableImage.js'], _modules['annotations/controllable/ControllableLabel.js'], _modules['annotations/eventEmitterMixin.js'], _modules['annotations/MockPoint.js'], _modules['annotations/ControlPoint.js']], function (H, U, controllableMixin, ControllableRect, ControllableCircle, ControllablePath, ControllableImage, ControllableLabel, eventEmitterMixin, MockPoint, ControlPoint) {
         /* *
          *
          *  (c) 2009-2017 Highsoft, Black Label
@@ -2482,13 +2493,15 @@
 
 
 
+        var isString = U.isString;
+
+
         var merge = H.merge,
             addEvent = H.addEvent,
             fireEvent = H.fireEvent,
             defined = H.defined,
             erase = H.erase,
             find = H.find,
-            isString = H.isString,
             pick = H.pick,
             reduce = H.reduce,
             splat = H.splat,
@@ -3822,7 +3835,7 @@
 
         return chartNavigation;
     });
-    _registerModule(_modules, 'annotations/navigationBindings.js', [_modules['parts/Globals.js'], _modules['mixins/navigation.js']], function (H, chartNavigationMixin) {
+    _registerModule(_modules, 'annotations/navigationBindings.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/navigation.js']], function (H, U, chartNavigationMixin) {
         /* *
          *
          *  (c) 2009-2017 Highsoft, Black Label
@@ -3831,15 +3844,17 @@
          *
          * */
 
+        var isArray = U.isArray,
+            isNumber = U.isNumber;
+
+
         var doc = H.doc,
             win = H.win,
             addEvent = H.addEvent,
             pick = H.pick,
             merge = H.merge,
             extend = H.extend,
-            isNumber = H.isNumber,
             fireEvent = H.fireEvent,
-            isArray = H.isArray,
             isObject = H.isObject,
             objectEach = H.objectEach,
             PREFIX = 'highcharts-';
@@ -3887,17 +3902,17 @@
              *        Annotation to be updated
              */
             updateRectSize: function (event, annotation) {
-                var options = annotation.options.typeOptions,
-                    x = this.chart.xAxis[0].toValue(event.chartX),
-                    y = this.chart.yAxis[0].toValue(event.chartY),
-                    width = x - options.point.x,
-                    height = options.point.y - y;
+                var chart = annotation.chart,
+                    options = annotation.options.typeOptions,
+                    coords = chart.pointer.getCoordinates(event),
+                    width = coords.xAxis[0].value - options.point.x,
+                    height = options.point.y - coords.yAxis[0].value;
 
                 annotation.update({
                     typeOptions: {
                         background: {
-                            width: width,
-                            height: height
+                            width: chart.inverted ? height : width,
+                            height: chart.inverted ? width : height
                         }
                     }
                 });
@@ -4627,6 +4642,12 @@
             this.selectedButtonElement = null;
         });
 
+        addEvent(H.Annotation, 'remove', function () {
+            if (this.chart.navigationBindings) {
+                this.chart.navigationBindings.deselectAnnotation();
+            }
+        });
+
 
         // Show edit-annotation form:
         function selectableAnnotation(annotationType) {
@@ -4813,8 +4834,7 @@
                         className: 'highcharts-circle-annotation',
                         /** @ignore */
                         start: function (e) {
-                            var x = this.chart.xAxis[0].toValue(e.chartX),
-                                y = this.chart.yAxis[0].toValue(e.chartY),
+                            var coords = this.chart.pointer.getCoordinates(e),
                                 type = 'circle',
                                 navigation = this.chart.options.navigation,
                                 bindings = navigation && navigation.bindings,
@@ -4827,8 +4847,8 @@
                                     point: {
                                         xAxis: 0,
                                         yAxis: 0,
-                                        x: x,
-                                        y: y
+                                        x: coords.xAxis[0].value,
+                                        y: coords.yAxis[0].value
                                     },
                                     r: 5,
                                     controlPoints: [{
@@ -4884,10 +4904,17 @@
                                 var point = annotation.options.shapes[0].point,
                                     x = this.chart.xAxis[0].toPixels(point.x),
                                     y = this.chart.yAxis[0].toPixels(point.y),
+                                    inverted = this.chart.inverted,
                                     distance = Math.max(
                                         Math.sqrt(
-                                            Math.pow(x - e.chartX, 2) +
-                                            Math.pow(y - e.chartY, 2)
+                                            Math.pow(
+                                                inverted ? y - e.chartX : x - e.chartX,
+                                                2
+                                            ) +
+                                            Math.pow(
+                                                inverted ? x - e.chartY : y - e.chartY,
+                                                2
+                                            )
                                         ),
                                         5
                                     );
@@ -4912,8 +4939,7 @@
                         className: 'highcharts-rectangle-annotation',
                         /** @ignore */
                         start: function (e) {
-                            var x = this.chart.xAxis[0].toValue(e.chartX),
-                                y = this.chart.yAxis[0].toValue(e.chartY),
+                            var coords = this.chart.pointer.getCoordinates(e),
                                 type = 'rect',
                                 navigation = this.chart.options.navigation,
                                 bindings = navigation && navigation.bindings;
@@ -4923,10 +4949,10 @@
                                 shapes: [{
                                     type: type,
                                     point: {
-                                        x: x,
-                                        y: y,
                                         xAxis: 0,
-                                        yAxis: 0
+                                        yAxis: 0,
+                                        x: coords.xAxis[0].value,
+                                        y: coords.yAxis[0].value
                                     },
                                     width: 5,
                                     height: 5,
@@ -4946,15 +4972,18 @@
                                         events: {
                                             drag: function (e, target) {
                                                 var annotation = target.annotation,
+                                                    inverted = this.chart.inverted,
                                                     xy = this
                                                         .mouseMoveToTranslation(e);
 
                                                 target.options.width = Math.max(
-                                                    target.options.width + xy.x,
+                                                    target.options.width +
+                                                        (inverted ? xy.y : xy.x),
                                                     5
                                                 );
                                                 target.options.height = Math.max(
-                                                    target.options.height + xy.y,
+                                                    target.options.height +
+                                                        (inverted ? xy.x : xy.y),
                                                     5
                                                 );
 
@@ -4977,11 +5006,18 @@
                             function (e, annotation) {
                                 var xAxis = this.chart.xAxis[0],
                                     yAxis = this.chart.yAxis[0],
+                                    inverted = this.chart.inverted,
                                     point = annotation.options.shapes[0].point,
                                     x = xAxis.toPixels(point.x),
                                     y = yAxis.toPixels(point.y),
-                                    width = Math.max(e.chartX - x, 5),
-                                    height = Math.max(e.chartY - y, 5);
+                                    width = Math.max(
+                                        inverted ? e.chartX - y : e.chartX - x,
+                                        5
+                                    ),
+                                    height = Math.max(
+                                        inverted ? e.chartY - x : e.chartY - y,
+                                        5
+                                    );
 
                                 annotation.update({
                                     shapes: [{
@@ -5007,8 +5043,7 @@
                         className: 'highcharts-label-annotation',
                         /** @ignore */
                         start: function (e) {
-                            var x = this.chart.xAxis[0].toValue(e.chartX),
-                                y = this.chart.yAxis[0].toValue(e.chartY),
+                            var coords = this.chart.pointer.getCoordinates(e),
                                 type = 'label',
                                 navigation = this.chart.options.navigation,
                                 bindings = navigation && navigation.bindings;
@@ -5020,10 +5055,10 @@
                                 },
                                 labels: [{
                                     point: {
-                                        x: x,
-                                        y: y,
                                         xAxis: 0,
-                                        yAxis: 0
+                                        yAxis: 0,
+                                        x: coords.xAxis[0].value,
+                                        y: coords.yAxis[0].value
                                     },
                                     controlPoints: [{
                                         symbol: 'triangle-down',
@@ -5164,7 +5199,7 @@
         });
 
     });
-    _registerModule(_modules, 'annotations/popup.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'annotations/popup.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  Popup generator for Stock tools
@@ -5175,14 +5210,16 @@
          *
          * */
 
+        var isArray = U.isArray,
+            isString = U.isString;
+
         var addEvent = H.addEvent,
             createElement = H.createElement,
+            defined = H.defined,
             objectEach = H.objectEach,
             pick = H.pick,
             wrap = H.wrap,
-            isString = H.isString,
             isObject = H.isObject,
-            isArray = H.isArray,
             indexFilter = /\d/g,
             PREFIX = 'highcharts-',
             DIV = 'div',
@@ -5866,8 +5903,16 @@
                  * @param {String} - type of select i.e series or volume.
                  * @param {Chart} - chart
                  * @param {HTMLDOMElement} - element where created HTML list is added
+                 * @param {String} selectedOption
+                 *         optional param for default value in dropdown
                  */
-                listAllSeries: function (type, optionName, chart, parentDiv) {
+                listAllSeries: function (
+                    type,
+                    optionName,
+                    chart,
+                    parentDiv,
+                    selectedOption
+                ) {
                     var selectName = PREFIX + optionName + '-type-' + type,
                         lang = this.lang,
                         selectBox,
@@ -5916,6 +5961,10 @@
                             );
                         }
                     });
+
+                    if (defined(selectedOption)) {
+                        selectBox.value = selectedOption;
+                    }
                 },
                 /**
                  * Create typical inputs for chosen indicator. Fields are extracted from
@@ -5965,7 +6014,8 @@
                         seriesType,
                         'series',
                         chart,
-                        rhsColWrapper
+                        rhsColWrapper,
+                        series.linkedParent && fields.volumeSeriesID
                     );
 
                     if (fields.volumeSeriesID) {
@@ -5974,7 +6024,8 @@
                             seriesType,
                             'volume',
                             chart,
-                            rhsColWrapper
+                            rhsColWrapper,
+                            series.linkedParent && series.linkedParent.options.id
                         );
                     }
 

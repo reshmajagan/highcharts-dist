@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Sankey diagram module
  *
@@ -195,41 +195,45 @@
 
             // When hovering node, highlight all connected links. When hovering a link,
             // highlight all connected nodes.
-            setNodeState: function () {
+            setNodeState: function (state) {
                 var args = arguments,
                     others = this.isNode ? this.linksTo.concat(this.linksFrom) :
                         [this.fromNode, this.toNode];
 
-                others.forEach(function (linkOrNode) {
-                    if (linkOrNode.series) {
-                        Point.prototype.setState.apply(linkOrNode, args);
+                if (state !== 'select') {
+                    others.forEach(function (linkOrNode) {
+                        if (linkOrNode.series) {
+                            Point.prototype.setState.apply(linkOrNode, args);
 
-                        if (!linkOrNode.isNode) {
-                            if (linkOrNode.fromNode.graphic) {
-                                Point.prototype.setState.apply(
-                                    linkOrNode.fromNode,
-                                    args
-                                );
-                            }
-                            if (linkOrNode.toNode.graphic) {
-                                Point.prototype.setState.apply(
-                                    linkOrNode.toNode,
-                                    args
-                                );
+                            if (!linkOrNode.isNode) {
+                                if (linkOrNode.fromNode.graphic) {
+                                    Point.prototype.setState.apply(
+                                        linkOrNode.fromNode,
+                                        args
+                                    );
+                                }
+                                if (linkOrNode.toNode.graphic) {
+                                    Point.prototype.setState.apply(
+                                        linkOrNode.toNode,
+                                        args
+                                    );
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
 
                 Point.prototype.setState.apply(this, args);
             }
         };
 
     });
-    _registerModule(_modules, 'mixins/tree-series.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'mixins/tree-series.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+
+        var isArray = U.isArray,
+            isNumber = U.isNumber;
 
         var extend = H.extend,
-            isArray = H.isArray,
             isBoolean = function (x) {
                 return typeof x === 'boolean';
             },
@@ -237,7 +241,6 @@
                 return typeof x === 'function';
             },
             isObject = H.isObject,
-            isNumber = H.isNumber,
             merge = H.merge,
             pick = H.pick;
 
@@ -595,6 +598,7 @@
 
 
         var defined = H.defined,
+            find = H.find,
             isObject = H.isObject,
             merge = H.merge,
             seriesType = H.seriesType,
@@ -862,6 +866,7 @@
                 invertable: true,
                 forceDL: true,
                 orderNodes: true,
+                pointArrayMap: ['from', 'to'],
                 // Create a single node that holds information on incoming and outgoing
                 // links.
                 createNode: H.NodesMixin.createNode,
@@ -950,11 +955,18 @@
                                 // Hanging layout for organization chart
                                 if (fromNode.options.layout === 'hanging') {
                                     node.hangsFrom = fromNode;
-                                    node.column += fromNode.linksFrom.findIndex(
-                                        function (link) {
-                                            return link.toNode === node;
+                                    i = -1; // Reuse existing variable i
+                                    find(
+                                        fromNode.linksFrom,
+                                        function (link, index) {
+                                            var found = link.toNode === node;
+                                            if (found) {
+                                                i = index;
+                                            }
+                                            return found;
                                         }
                                     );
+                                    node.column += i;
                                 }
                             }
                         }

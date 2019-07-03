@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Wind barb series module
  *
@@ -196,7 +196,7 @@
 
         return onSeriesMixin;
     });
-    _registerModule(_modules, 'modules/windbarb.src.js', [_modules['parts/Globals.js'], _modules['mixins/on-series.js']], function (H, onSeriesMixin) {
+    _registerModule(_modules, 'modules/windbarb.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/on-series.js']], function (H, U, onSeriesMixin) {
         /* *
          * Wind barb series module
          *
@@ -205,6 +205,9 @@
          * License: www.highcharts.com/license
          */
 
+
+
+        var isNumber = U.isNumber;
 
 
         var noop = H.noop,
@@ -576,7 +579,7 @@
                 getExtremes: noop
             }, {
                 isValid: function () {
-                    return H.isNumber(this.value) && this.value >= 0;
+                    return isNumber(this.value) && this.value >= 0;
                 }
             });
 

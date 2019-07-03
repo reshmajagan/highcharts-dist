@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * (c) 2010-2019 Highsoft AS
  * Author: Sebastian Domas
@@ -183,7 +183,7 @@
 
         return derivedSeriesMixin;
     });
-    _registerModule(_modules, 'modules/histogram.src.js', [_modules['parts/Globals.js'], _modules['mixins/derived-series.js']], function (H, derivedSeriesMixin) {
+    _registerModule(_modules, 'modules/histogram.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/derived-series.js']], function (H, U, derivedSeriesMixin) {
         /* *
          *
          *  Copyright (c) 2010-2017 Highsoft AS
@@ -194,10 +194,12 @@
          * */
 
 
+        var isNumber = U.isNumber;
+
+
         var objectEach = H.objectEach,
             seriesType = H.seriesType,
             correctFloat = H.correctFloat,
-            isNumber = H.isNumber,
             arrayMax = H.arrayMax,
             arrayMin = H.arrayMin,
             merge = H.merge;
@@ -426,7 +428,7 @@
          */
 
     });
-    _registerModule(_modules, 'modules/bellcurve.src.js', [_modules['parts/Globals.js'], _modules['mixins/derived-series.js']], function (H, derivedSeriesMixin) {
+    _registerModule(_modules, 'modules/bellcurve.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/derived-series.js']], function (H, U, derivedSeriesMixin) {
         /* *
          * (c) 2010-2019 Highsoft AS
          *
@@ -437,9 +439,11 @@
 
 
 
+        var isNumber = U.isNumber;
+
+
         var seriesType = H.seriesType,
             correctFloat = H.correctFloat,
-            isNumber = H.isNumber,
             merge = H.merge;
 
 

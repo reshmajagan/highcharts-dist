@@ -44,6 +44,13 @@ import Highcharts from './Globals.js';
 * @type {"legendItemClick"}
 */
 /**
+ * @interface Highcharts.PointOptionsObject
+ */ /**
+* The sequential index of the data point in the legend.
+* @name Highcharts.PointOptionsObject#legendIndex
+* @type {number|undefined}
+*/
+/**
  * Gets fired when the legend item belonging to a series is clicked. The default
  * action is to toggle the visibility of the series. This can be prevented by
  * returning `false` or calling `event.preventDefault()`.
@@ -77,7 +84,8 @@ import Highcharts from './Globals.js';
 * @name Highcharts.SeriesLegendItemClickEventObject#type
 * @type {"legendItemClick"}
 */
-import './Utilities.js';
+import U from './Utilities.js';
+var isNumber = U.isNumber;
 var H = Highcharts, addEvent = H.addEvent, css = H.css, discardElement = H.discardElement, defined = H.defined, fireEvent = H.fireEvent, isFirefox = H.isFirefox, marginNames = H.marginNames, merge = H.merge, pick = H.pick, setAnimation = H.setAnimation, stableSort = H.stableSort, win = H.win, wrap = H.wrap;
 /* eslint-disable no-invalid-this, valid-jsdoc */
 /**
@@ -452,7 +460,8 @@ Highcharts.Legend.prototype = {
         if (!li) { // generate it once, later move it
             // Generate the group box, a group to hold the symbol and text. Text
             // is to be appended in Legend class.
-            item.legendGroup = renderer.g('legend-item')
+            item.legendGroup = renderer
+                .g('legend-item')
                 .addClass('highcharts-' + series.type + '-series ' +
                 'highcharts-color-' + item.colorIndex +
                 (itemClassName ? ' ' + itemClassName : '') +
@@ -632,9 +641,10 @@ Highcharts.Legend.prototype = {
      * @return {void}
      */
     adjustMargins: function (margin, spacing) {
-        var chart = this.chart, options = this.options, alignment = this.getAlignment(), titleMargin = chart.options.title.margin !== undefined ?
-            chart.titleOffset +
-                chart.options.title.margin :
+        var legend = this, chart = this.chart, options = this.options, alignment = this.getAlignment(), titleMarginOption = chart.options.title.margin, titleMargin = titleMarginOption !== undefined ?
+            chart.titleOffset[0] + titleMarginOption :
+            0, titleMarginBottom = titleMarginOption !== undefined ?
+            chart.titleOffset[2] + titleMarginOption :
             0;
         if (alignment) {
             ([
@@ -651,8 +661,11 @@ Highcharts.Legend.prototype = {
                         pick(options.margin, 12) +
                         spacing[side] +
                         (side === 0 &&
-                            (chart.titleOffset === 0 ? 0 : titleMargin)) // #7428, #7894
-                    ));
+                            (chart.titleOffset[0] === 0 ?
+                                0 : titleMargin)) + // #7428, #7894
+                        (side === 2 &&
+                            (chart.titleOffset[2] === 0 ?
+                                0 : titleMarginBottom))));
                 }
             });
         }
@@ -673,12 +686,14 @@ Highcharts.Legend.prototype = {
                 lastPoint = H.find(useFirstPoint ?
                     item.points :
                     item.points.slice(0).reverse(), function (item) {
-                    return H.isNumber(item.plotY);
+                    return isNumber(item.plotY);
                 });
                 height = item.legendGroup.getBBox().height;
                 top = item.yAxis.top - chart.plotTop;
                 if (item.visible) {
-                    target = lastPoint ? lastPoint.plotY : item.yAxis.height;
+                    target = lastPoint ?
+                        lastPoint.plotY :
+                        item.yAxis.height;
                     target += top - 0.3 * height;
                 }
                 else {
@@ -708,7 +723,7 @@ Highcharts.Legend.prototype = {
      * @return {void}
      */
     render: function () {
-        var legend = this, chart = legend.chart, renderer = chart.renderer, legendGroup = legend.group, allItems, display, legendWidth, legendHeight, box = legend.box, options = legend.options, padding = legend.padding, alignTo, allowedWidth, y;
+        var legend = this, chart = legend.chart, renderer = chart.renderer, legendGroup = legend.group, allItems, display, legendWidth, legendHeight, box = legend.box, options = legend.options, padding = legend.padding, allowedWidth;
         legend.itemX = padding;
         legend.itemY = legend.initialItemY;
         legend.offsetWidth = 0;
@@ -822,13 +837,18 @@ Highcharts.Legend.prototype = {
         if (display) {
             // If aligning to the top and the layout is horizontal, adjust for
             // the title (#7428)
-            alignTo = chart.spacingBox;
-            if (/(lth|ct|rth)/.test(legend.getAlignment())) {
-                y = alignTo.y + chart.titleOffset;
-                alignTo = merge(alignTo, {
-                    y: chart.titleOffset > 0 ?
-                        y += chart.options.title.margin : y
-                });
+            var margin = chart.options.title.margin;
+            var vAlign = legend.getAlignment().charAt(1);
+            var alignTo = chart.spacingBox;
+            var y = alignTo.y;
+            if (vAlign === 't' && chart.titleOffset[0] > 0) {
+                y += chart.titleOffset[0] + margin;
+            }
+            else if (vAlign === 'b' && chart.titleOffset[2] > 0) {
+                y -= chart.titleOffset[2] + margin;
+            }
+            if (y !== alignTo.y) {
+                alignTo = merge(alignTo, { y: y });
             }
             legendGroup.align(merge(options, {
                 width: legendWidth,

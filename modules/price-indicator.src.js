@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * Advanced Highstock tools
  *
@@ -29,7 +29,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/price-indicator.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'modules/price-indicator.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * (c) 2009-2019 Sebastian Bochann
          *
@@ -38,9 +38,11 @@
          * License: www.highcharts.com/license
          */
 
+
+        var isArray = U.isArray;
+
         var addEvent = H.addEvent,
-            merge = H.merge,
-            isArray = H.isArray;
+            merge = H.merge;
 
         /**
          * The line marks the last price from visible range of points.

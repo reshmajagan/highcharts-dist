@@ -82,6 +82,17 @@ declare module "../highcharts.src" {
      *        The Ajax settings to use.
      */
     function ajax(attr: AjaxSettings): void;
+    /**
+     * Get a JSON resource over XHR, also supporting CORS without preflight.
+     *
+     * @param url
+     *        The URL to load.
+     *
+     * @param success
+     *        The success callback. For error handling, use the
+     *        `Highcharts.ajax` function instead.
+     */
+    function getJSON(url: string, success: Function): void;
 }
 export default factory;
 export let Highcharts: typeof _Highcharts;

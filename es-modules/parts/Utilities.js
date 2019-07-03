@@ -255,6 +255,19 @@ import H from './Globals.js';
 * @type {number}
 */
 /**
+ * Describes a range.
+ *
+ * @interface Highcharts.RangeObject
+ */ /**
+* Maximum number of the range.
+* @name Highcharts.RangeObject#max
+* @type {number}
+*/ /**
+* Minimum number of the range.
+* @name Highcharts.RangeObject#min
+* @type {number}
+*/
+/**
  * If a number is given, it defines the pixel length. If a percentage string is
  * given, like for example `'50%'`, the setting defines a length relative to a
  * base size, for example the size of a container.
@@ -320,7 +333,7 @@ var charts = H.charts, doc = H.doc, win = H.win;
  * @return {void}
  */
 H.error = function (code, stop, chart) {
-    var msg = H.isNumber(code) ?
+    var msg = isNumber(code) ?
         'Highcharts error #' + code + ': www.highcharts.com/errors/' +
             code :
         code, defaultHandler = function () {
@@ -657,7 +670,7 @@ H.Fx.prototype = {
                 start = [];
             }
         }
-        if (start.length && H.isNumber(shift)) {
+        if (start.length && isNumber(shift)) {
             // The common target length for the start and end array, where both
             // arrays are padded in opposite ends
             fullLength = (end.length + shift * positionFactor * numParams);
@@ -783,9 +796,9 @@ H.merge = function () {
  * @return {number}
  *         number
  */
-H.pInt = function (s, mag) {
+function pInt(s, mag) {
     return parseInt(s, mag || 10);
-};
+}
 /**
  * Utility function to check for string type.
  *
@@ -797,9 +810,9 @@ H.pInt = function (s, mag) {
  * @return {boolean}
  *         True if the argument is a string.
  */
-H.isString = function (s) {
+function isString(s) {
     return typeof s === 'string';
-};
+}
 /**
  * Utility function to check if an item is an array.
  *
@@ -811,10 +824,10 @@ H.isString = function (s) {
  * @return {boolean}
  *         True if the argument is an array.
  */
-H.isArray = function (obj) {
+function isArray(obj) {
     var str = Object.prototype.toString.call(obj);
     return str === '[object Array]' || str === '[object Array Iterator]';
-};
+}
 /**
  * Utility function to check if an item is of type object.
  *
@@ -830,7 +843,7 @@ H.isArray = function (obj) {
  *         True if the argument is an object.
  */
 H.isObject = function (obj, strict) {
-    return !!obj && typeof obj === 'object' && (!strict || !H.isArray(obj));
+    return !!obj && typeof obj === 'object' && (!strict || !isArray(obj));
 };
 /**
  * Utility function to check if an Object is a HTML Element.
@@ -875,9 +888,9 @@ H.isClass = function (obj) {
  * @return {boolean}
  *         True if the item is a finite number
  */
-H.isNumber = function (n) {
+function isNumber(n) {
     return typeof n === 'number' && !isNaN(n) && n < Infinity && n > -Infinity;
-};
+}
 /**
  * Remove the last occurence of an item from an array.
  *
@@ -936,7 +949,7 @@ H.defined = function (obj) {
 H.attr = function (elem, prop, value) {
     var ret;
     // if the prop is a string
-    if (H.isString(prop)) {
+    if (isString(prop)) {
         // set the value
         if (H.defined(value)) {
             elem.setAttribute(prop, value);
@@ -970,7 +983,7 @@ H.attr = function (elem, prop, value) {
  *         The produced or original array.
  */
 H.splat = function (obj) {
-    return H.isArray(obj) ? obj : [obj];
+    return isArray(obj) ? obj : [obj];
 };
 /**
  * Set a timeout if the delay is given, otherwise perform the function
@@ -1040,18 +1053,20 @@ H.extend = function (a, b) {
     }
     return a;
 };
+/* eslint-disable valid-jsdoc */
 /**
  * Return the first value that is not null or undefined.
  *
- * @function Highcharts.pick
+ * @function Highcharts.pick<T>
  *
- * @param {...*} items
+ * @param {...Array<T|null|undefined>} items
  *        Variable number of arguments to inspect.
  *
- * @return {*}
+ * @return {T}
  *         The value of the first argument that is not null or undefined.
  */
 H.pick = function () {
+    /* eslint-enable valid-jsdoc */
     var args = arguments, i, arg, length = args.length;
     for (i = 0; i < length; i++) {
         arg = args[i];
@@ -1236,7 +1251,7 @@ H.datePropsToTimestamps = function (object) {
         if (H.isObject(val) && typeof val.getTime === 'function') {
             object[key] = val.getTime();
         }
-        else if (H.isObject(val) || H.isArray(val)) {
+        else if (H.isObject(val) || isArray(val)) {
             H.datePropsToTimestamps(val);
         }
     });
@@ -1353,6 +1368,25 @@ H.format = function (str, ctx, time) {
  */
 H.getMagnitude = function (num) {
     return Math.pow(10, Math.floor(Math.log(num) / Math.LN10));
+};
+/**
+ * Check if two boxes are intersecting.
+ *
+ * @function Highcharts.isIntersectRect
+ *
+ * @param {Highcharts.BBoxObject} box1
+ *        First box
+ * @param {Highcharts.BBoxObject} box2
+ *        Second box
+ *
+ * @return {boolean}
+ *         Boolean whether rects overlap.
+ */
+H.isIntersectRect = function (box1, box2) {
+    return !(box2.x > box1.x + box1.width ||
+        box2.x + box2.width < box1.x ||
+        box2.y > box1.y + box1.height ||
+        box2.y + box2.height < box1.y);
 };
 /**
  * Take an interval and normalize it to multiples of round numbers.
@@ -1655,7 +1689,7 @@ H.numberFormat = function (number, decimals, decimalPoint, thousandsSep) {
         // Preserve decimals. Not huge numbers (#3793).
         decimals = Math.min(origDec, 20);
     }
-    else if (!H.isNumber(decimals)) {
+    else if (!isNumber(decimals)) {
         decimals = 2;
     }
     else if (decimals && exponent[1] && exponent[1] < 0) {
@@ -1687,7 +1721,7 @@ H.numberFormat = function (number, decimals, decimalPoint, thousandsSep) {
     roundedNumber = (Math.abs(exponent[1] ? exponent[0] : number) +
         Math.pow(10, -Math.max(decimals, origDec) - 1)).toFixed(decimals);
     // A string containing the positive integer component of the number
-    strinteger = String(H.pInt(roundedNumber));
+    strinteger = String(pInt(roundedNumber));
     // Leftover after grouping into thousands. Can be 0, 1 or 2.
     thousands = strinteger.length > 3 ? strinteger.length % 3 : 0;
     // Language
@@ -1750,13 +1784,20 @@ H.getStyle = function (el, prop, toInt) {
     var style;
     // For width and height, return the actual inner pixel size (#4913)
     if (prop === 'width') {
+        var offsetWidth = Math.min(el.offsetWidth, el.scrollWidth);
+        // In flex boxes, we need to use getBoundingClientRect and floor it,
+        // because scrollWidth doesn't support subpixel precision (#6427) ...
+        var boundingClientRectWidth = el.getBoundingClientRect &&
+            el.getBoundingClientRect().width;
+        // ...unless if the containing div or its parents are transform-scaled
+        // down, in which case the boundingClientRect can't be used as it is
+        // also scaled down (#9871, #10498).
+        if (boundingClientRectWidth < offsetWidth &&
+            boundingClientRectWidth >= offsetWidth - 1) {
+            offsetWidth = Math.floor(boundingClientRectWidth);
+        }
         return Math.max(0, // #8377
-        (Math.min(el.offsetWidth, el.scrollWidth, (el.getBoundingClientRect &&
-            // #9871, getBoundingClientRect doesn't handle
-            // transforms, so avoid that
-            H.getStyle(el, 'transform', false) === 'none') ?
-            Math.floor(el.getBoundingClientRect().width) : // #6427
-            Infinity) -
+        (offsetWidth -
             H.getStyle(el, 'padding-left') -
             H.getStyle(el, 'padding-right')));
     }
@@ -1775,7 +1816,7 @@ H.getStyle = function (el, prop, toInt) {
     if (style) {
         style = style.getPropertyValue(prop);
         if (H.pick(toInt, prop !== 'opacity')) {
-            style = H.pInt(style);
+            style = pInt(style);
         }
     }
     return style;
@@ -1802,23 +1843,25 @@ H.getStyle = function (el, prop, toInt) {
 H.inArray = function (item, arr, fromIndex) {
     return arr.indexOf(item, fromIndex);
 };
+/* eslint-disable valid-jsdoc */
 /**
  * Return the value of the first element in the array that satisfies the
  * provided testing function.
  *
- * @function Highcharts.find
+ * @function Highcharts.find<T>
  *
- * @param {Array<*>} arr
+ * @param {Array<T>} arr
  *        The array to test.
  *
  * @param {Function} callback
  *        The callback function. The function receives the item as the first
  *        argument. Return `true` if this item satisfies the condition.
  *
- * @return {*}
+ * @return {T|undefined}
  *         The value of the element.
  */
 H.find = Array.prototype.find ?
+    /* eslint-enable valid-jsdoc */
     function (arr, callback) {
         return arr.find(callback);
     } :
@@ -2287,7 +2330,7 @@ H.animate = function (el, params, opt) {
             complete: args[4]
         };
     }
-    if (!H.isNumber(opt.duration)) {
+    if (!isNumber(opt.duration)) {
         opt.duration = 400;
     }
     opt.easing = typeof opt.easing === 'function' ?
@@ -2432,7 +2475,7 @@ if (win.jQuery) {
             if (args[0]) {
                 new H[ // eslint-disable-line no-new
                 // Constructor defaults to Chart
-                H.isString(args[0]) ? args.shift() : 'Chart'](this[0], args[0], args[1]);
+                isString(args[0]) ? args.shift() : 'Chart'](this[0], args[0], args[1]);
                 return this;
             }
             // When called without parameters or with the return argument,
@@ -2441,3 +2484,11 @@ if (win.jQuery) {
         }
     };
 }
+// TODO use named exports when supported.
+var utils = {
+    isArray: isArray,
+    isNumber: isNumber,
+    isString: isString,
+    pInt: pInt
+};
+export default utils;

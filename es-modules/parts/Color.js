@@ -25,12 +25,11 @@ import H from './Globals.js';
  * // Linear gradient used as a color option
  * color: {
  *     linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
- *         stops: [
- *             [0, '#003399'], // start
- *             [0.5, '#ffffff'], // middle
- *             [1, '#3366AA'] // end
- *         ]
- *     }
+ *     stops: [
+ *         [0, '#003399'], // start
+ *         [0.5, '#ffffff'], // middle
+ *         [1, '#3366AA'] // end
+ *     ]
  * }
  *
  * @interface Highcharts.GradientColorObject
@@ -49,7 +48,23 @@ import H from './Globals.js';
 * applied. The second item is the color for each stop. This color can also be
 * given in the rgba format.
 * @name Highcharts.GradientColorObject#stops
-* @type {Array<Array<number,Highcharts.ColorString>>|undefined}
+* @type {Array<Highcharts.GradientColorStopObject>}
+*/
+/**
+ * Color stop tuple.
+ *
+ * @see Highcharts.GradientColorObject
+ *
+ * @interface Highcharts.GradientColorStopObject
+ */ /**
+* @name Highcharts.GradientColorStopObject#0
+* @type {number}
+*/ /**
+* @name Highcharts.GradientColorStopObject#1
+* @type {Highcharts.ColorString}
+*/ /**
+* @name Highcharts.GradoentColorStopObject#color
+* @type {Highcharts.Color|undefined}
 */
 /**
  * Defines the start position and the end position for a gradient relative
@@ -91,8 +106,9 @@ import H from './Globals.js';
 * @name Highcharts.RadialGradientColorObject#r
 * @type {number}
 */
-import './Utilities.js';
-var isNumber = H.isNumber, merge = H.merge, pInt = H.pInt;
+import U from './Utilities.js';
+var isNumber = U.isNumber, pInt = U.pInt;
+var merge = H.merge;
 /* eslint-disable no-invalid-this, valid-jsdoc */
 /**
  * Handle color operations. Some object methods are chainable.

@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * (c) 2014-2019 Highsoft AS
  * Authors: Jon Arild Nygard / Oystein Moseng
@@ -27,10 +27,12 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'mixins/tree-series.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'mixins/tree-series.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+
+        var isArray = U.isArray,
+            isNumber = U.isNumber;
 
         var extend = H.extend,
-            isArray = H.isArray,
             isBoolean = function (x) {
                 return typeof x === 'boolean';
             },
@@ -38,7 +40,6 @@
                 return typeof x === 'function';
             },
             isObject = H.isObject,
-            isNumber = H.isNumber,
             merge = H.merge,
             pick = H.pick;
 
@@ -365,7 +366,7 @@
 
         return drawPoint;
     });
-    _registerModule(_modules, 'modules/treemap.src.js', [_modules['parts/Globals.js'], _modules['mixins/tree-series.js'], _modules['mixins/draw-point.js']], function (H, mixinTreeSeries, drawPoint) {
+    _registerModule(_modules, 'modules/treemap.src.js', [_modules['parts/Globals.js'], _modules['mixins/tree-series.js'], _modules['mixins/draw-point.js'], _modules['parts/Utilities.js']], function (H, mixinTreeSeries, drawPoint, U) {
         /* *
          * (c) 2014-2019 Highsoft AS
          *
@@ -374,6 +375,11 @@
          * License: www.highcharts.com/license
          */
 
+
+
+        var isArray = U.isArray,
+            isNumber = U.isNumber,
+            isString = U.isString;
 
 
         var seriesType = H.seriesType,
@@ -387,13 +393,10 @@
             fireEvent = H.fireEvent,
             getColor = mixinTreeSeries.getColor,
             getLevelOptions = mixinTreeSeries.getLevelOptions,
-            isArray = H.isArray,
             isBoolean = function (x) {
                 return typeof x === 'boolean';
             },
-            isNumber = H.isNumber,
             isObject = H.isObject,
-            isString = H.isString,
             pick = H.pick,
             Series = H.Series,
             stableSort = H.stableSort,

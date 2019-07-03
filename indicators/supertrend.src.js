@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * Indicator series type for Highstock
  *
@@ -28,7 +28,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'indicators/supertrend.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/supertrend.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -37,9 +37,10 @@
 
 
 
+        var isArray = U.isArray;
+
         var ATR = H.seriesTypes.atr,
             SMA = H.seriesTypes.sma,
-            isArray = H.isArray,
             merge = H.merge,
             correctFloat = H.correctFloat;
 

@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Force directed graph module
  *
@@ -195,31 +195,33 @@
 
             // When hovering node, highlight all connected links. When hovering a link,
             // highlight all connected nodes.
-            setNodeState: function () {
+            setNodeState: function (state) {
                 var args = arguments,
                     others = this.isNode ? this.linksTo.concat(this.linksFrom) :
                         [this.fromNode, this.toNode];
 
-                others.forEach(function (linkOrNode) {
-                    if (linkOrNode.series) {
-                        Point.prototype.setState.apply(linkOrNode, args);
+                if (state !== 'select') {
+                    others.forEach(function (linkOrNode) {
+                        if (linkOrNode.series) {
+                            Point.prototype.setState.apply(linkOrNode, args);
 
-                        if (!linkOrNode.isNode) {
-                            if (linkOrNode.fromNode.graphic) {
-                                Point.prototype.setState.apply(
-                                    linkOrNode.fromNode,
-                                    args
-                                );
-                            }
-                            if (linkOrNode.toNode.graphic) {
-                                Point.prototype.setState.apply(
-                                    linkOrNode.toNode,
-                                    args
-                                );
+                            if (!linkOrNode.isNode) {
+                                if (linkOrNode.fromNode.graphic) {
+                                    Point.prototype.setState.apply(
+                                        linkOrNode.fromNode,
+                                        args
+                                    );
+                                }
+                                if (linkOrNode.toNode.graphic) {
+                                    Point.prototype.setState.apply(
+                                        linkOrNode.toNode,
+                                        args
+                                    );
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
 
                 Point.prototype.setState.apply(this, args);
             }
@@ -1810,6 +1812,7 @@
                         if (chart.isInsidePlot(newPlotX, newPlotY)) {
                             point.plotX = newPlotX;
                             point.plotY = newPlotY;
+                            point.hasDragged = true;
 
                             this.redrawHalo(point);
 
@@ -1846,13 +1849,13 @@
              * @return {void}
              */
             onMouseUp: function (point) {
-                if (point.fixedPosition) {
+                if (point.fixedPosition && point.hasDragged) {
                     if (this.layout.enableSimulation) {
                         this.layout.start();
                     } else {
                         this.chart.redraw();
                     }
-                    point.inDragMode = false;
+                    point.inDragMode = point.hasDragged = false;
                     if (!this.options.fixedDraggable) {
                         delete point.fixedPosition;
                     }
@@ -2385,6 +2388,7 @@
                 requireSorting: false,
                 directTouch: true,
                 noSharedTooltip: true,
+                pointArrayMap: ['from', 'to'],
                 trackerGroups: ['group', 'markerGroup', 'dataLabelsGroup'],
                 drawTracker: H.TrackerMixin.drawTrackerPoint,
                 // Animation is run in `series.simulation`.
@@ -2457,6 +2461,20 @@
                     this.data.forEach(function (link) {
                         link.formatPrefix = 'link';
                     });
+
+                    this.indexateNodes();
+                },
+
+                /**
+                 * Set index for each node. Required for proper `node.update()`.
+                 * Note that links are indexated out of the box in `generatePoints()`.
+                 *
+                 * @private
+                 */
+                indexateNodes: function () {
+                    this.nodes.forEach(function (node, index) {
+                        node.index = index;
+                    });
                 },
 
                 /**
@@ -2469,7 +2487,13 @@
                     var attribs = Series.prototype.markerAttribs
                         .call(this, point, state);
 
-                    attribs.x = point.plotX - (attribs.width / 2 || 0);
+                    // series.render() is called before initial positions are set:
+                    if (!defined(point.plotY)) {
+                        attribs.y = 0;
+                    }
+
+                    attribs.x = (point.plotX || 0) - (attribs.width / 2 || 0);
+
                     return attribs;
                 },
 
@@ -2977,9 +3001,13 @@
                  */
                 destroy: function () {
                     if (this.isNode) {
-                        this.linksFrom.forEach(
-                            function (linkFrom) {
-                                linkFrom.destroyElements();
+                        this.linksFrom.concat(this.linksTo).forEach(
+                            function (link) {
+                                // Removing multiple nodes at the same time
+                                // will try to remove link between nodes twice
+                                if (link.destroyElements) {
+                                    link.destroyElements();
+                                }
                             }
                         );
                         this.series.layout.removeNode(this);
@@ -3063,14 +3091,6 @@
          * @type      {string}
          * @product   highcharts
          * @apioption series.networkgraph.data.to
-         */
-
-        /**
-         * The weight of the link.
-         *
-         * @type      {number}
-         * @product   highcharts
-         * @apioption series.networkgraph.data.weight
          */
 
         /**

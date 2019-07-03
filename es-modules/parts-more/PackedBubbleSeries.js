@@ -109,7 +109,11 @@
 'use strict';
 
 import H from '../parts/Globals.js';
-import '../parts/Utilities.js';
+
+import U from '../parts/Utilities.js';
+var isArray = U.isArray,
+    isNumber = U.isNumber;
+
 import '../parts/Axis.js';
 import '../parts/Color.js';
 import '../parts/Point.js';
@@ -365,7 +369,7 @@ seriesType(
     {
         /**
          * Minimum bubble size. Bubbles will automatically size between the
-         * `minSize` and `maxSize` to reflect the `z` value of each bubble.
+         * `minSize` and `maxSize` to reflect the value of each bubble.
          * Can be either pixels (when no unit is given), or a percentage of
          * the smallest one of the plot width and height, divided by the square
          * root of total number of points.
@@ -380,7 +384,7 @@ seriesType(
         minSize: '10%',
         /**
          * Maximum bubble size. Bubbles will automatically size between the
-         * `minSize` and `maxSize` to reflect the `z` value of each bubble.
+         * `minSize` and `maxSize` to reflect the value of each bubble.
          * Can be either pixels (when no unit is given), or a percentage of
          * the smallest one of the plot width and height, divided by the square
          * root of total number of points.
@@ -653,7 +657,7 @@ seriesType(
             // when enabled allowOverlap.
             if (!series.options.dataLabels.allowOverlap) {
                 series.data.forEach(function (point) {
-                    if (H.isArray(point.dataLabels)) {
+                    if (isArray(point.dataLabels)) {
                         point.dataLabels.forEach(function (dataLabel) {
                             dataLabels.push(dataLabel);
                         });
@@ -741,7 +745,7 @@ seriesType(
                     bBox[3] = max(bBox[3], p.plotY + radius);
                 }
             });
-            return H.isNumber(bBox.width / bBox.height) ? bBox : null;
+            return isNumber(bBox.width / bBox.height) ? bBox : null;
         },
         /**
          * The function responsible for calculating the parent node radius
@@ -1550,7 +1554,7 @@ addEvent(Chart, 'beforeRedraw', function () {
  *
  * @type      {Array<Object|Array>}
  * @extends   series.line.data
- * @excluding marker
+ * @excluding marker, x, y
  * @sample    {highcharts} highcharts/series/data-array-of-objects/
  *            Config objects
  * @product   highcharts

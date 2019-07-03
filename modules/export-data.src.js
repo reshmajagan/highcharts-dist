@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Exporting module
  *
@@ -115,10 +115,12 @@
             }
 
             r.open(options.type.toUpperCase(), options.url, true);
-            r.setRequestHeader(
-                'Content-Type',
-                headers[options.dataType] || headers.text
-            );
+            if (!options.headers['Content-Type']) {
+                r.setRequestHeader(
+                    'Content-Type',
+                    headers[options.dataType] || headers.text
+                );
+            }
 
             H.objectEach(options.headers, function (val, key) {
                 r.setRequestHeader(key, val);
@@ -149,6 +151,30 @@
             } catch (e) {}
 
             r.send(options.data || true);
+        };
+
+        /**
+         * Get a JSON resource over XHR, also supporting CORS without preflight.
+         *
+         * @function Highcharts.getJSON
+         *
+         * @param {string} url
+         *        The URL to load.
+         * @param {function} success
+         *        The success callback. For error handling, use the `Highcharts.ajax`
+         *        function instead.
+         */
+        H.getJSON = function (url, success) {
+            H.ajax({
+                url: url,
+                success: success,
+                dataType: 'json',
+                headers: {
+                    // Override the Content-Type to avoid preflight problems with CORS
+                    // in the Highcharts demos
+                    'Content-Type': 'text/plain'
+                }
+            });
         };
 
     });
@@ -494,7 +520,8 @@
             if (
                 this.options &&
                 this.options.exporting &&
-                this.options.exporting.showTable
+                this.options.exporting.showTable &&
+                !this.options.chart.forExport
             ) {
                 this.viewData();
             }

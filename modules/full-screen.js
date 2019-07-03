@@ -1,5 +1,5 @@
 /*
- Highcharts JS v7.1.2 (2019-06-03)
+ Highstock JS v7.1.2-modified (2019-07-03)
 
  Advanced Highstock tools
 

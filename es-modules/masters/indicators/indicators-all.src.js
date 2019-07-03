@@ -1,5 +1,5 @@
 /**
- * @license  @product.name@ JS v@product.version@ (@product.date@)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  * @module highcharts/indicators/indicators-all
  * @requires highcharts
  * @requires highcharts/modules/stock

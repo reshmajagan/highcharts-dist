@@ -8,10 +8,12 @@
 'use strict';
 import H from '../parts/Globals.js';
 
+import U from '../parts/Utilities.js';
+var isArray = U.isArray;
+
 var addEvent = H.addEvent,
     createElement = H.createElement,
     pick = H.pick,
-    isArray = H.isArray,
     fireEvent = H.fireEvent,
     getStyle = H.getStyle,
     merge = H.merge,
@@ -208,7 +210,7 @@ H.setOptions({
              * Path where Highcharts will look for icons. Change this to use
              * icons from a different server.
              */
-            iconsURL: 'https://code.highcharts.com/@product.version@/gfx/stock-icons/',
+            iconsURL: 'https://code.highcharts.com/7.1.2-modified/gfx/stock-icons/',
             /**
              * A collection of strings pointing to config options for the
              * toolbar items. Each name refers to unique key from definitions

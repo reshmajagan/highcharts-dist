@@ -119,15 +119,21 @@ declare module "../highcharts" {
         lon: number;
     }
     interface Point {
+        pointPadding?: number;
         /**
          * In Highmaps, when data is loaded from GeoJSON, the GeoJSON item's
          * properies are copied over here.
          */
         properties: any;
+        value?: number;
         /**
          * Highmaps only. Zoom in on the point using the global animation.
          */
         zoomTo(): void;
+    }
+    interface PointOptionsObject {
+        pointPadding?: number;
+        value?: number;
     }
     /**
      * Contains all loaded map data for Highmaps.

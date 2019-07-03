@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * Indicator series type for Highstock
  *
@@ -77,7 +77,7 @@
 
         return requiredIndicatorMixin;
     });
-    _registerModule(_modules, 'indicators/dema.src.js', [_modules['parts/Globals.js'], _modules['mixins/indicator-required.js']], function (H, requiredIndicatorMixin) {
+    _registerModule(_modules, 'indicators/dema.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/indicator-required.js']], function (H, U, requiredIndicatorMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -86,8 +86,10 @@
 
 
 
-        var isArray = H.isArray,
-            EMAindicator = H.seriesTypes.ema,
+        var isArray = U.isArray;
+
+
+        var EMAindicator = H.seriesTypes.ema,
             requiredIndicator = requiredIndicatorMixin,
             correctFloat = H.correctFloat;
 
@@ -104,7 +106,7 @@
             'dema',
             'ema',
             /**
-             * Normalized average true range indicator (NATR). This series requires
+             * Double exponential moving average (DEMA) indicator. This series requires
              * `linkedTo` option to be set and should be loaded after the
              * `stock/indicators/indicators.js` and `stock/indicators/ema.js`.
              *

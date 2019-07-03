@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * X-range series
  *
@@ -28,7 +28,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/xrange.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'modules/xrange.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * X-range series module
          *
@@ -37,14 +37,24 @@
          * License: www.highcharts.com/license
          */
 
+        /**
+         * @interface Highcharts.PointOptionsObject
+         *//**
+         * The ending X value of the range point.
+         * @name Highcharts.PointOptionsObject#x2
+         * @type {number|undefined}
+         * @requires modules/xrange
+         */
 
+
+
+        var isNumber = U.isNumber;
 
         var addEvent = H.addEvent,
             defined = H.defined,
             color = H.Color,
             columnType = H.seriesTypes.column,
             correctFloat = H.correctFloat,
-            isNumber = H.isNumber,
             isObject = H.isObject,
             merge = H.merge,
             pick = H.pick,
@@ -198,7 +208,7 @@
                  * free access to features like groupPadding, grouping, pointWidth etc.
                  *
                  * @private
-                 * @function Higcharts.Series#getColumnMetrics
+                 * @function Highcharts.Series#getColumnMetrics
                  *
                  * @return {Highcharts.ColumnMetricsObject}
                  */
@@ -326,7 +336,8 @@
                         pointHeight = Math.round(metrics.width),
                         dlLeft,
                         dlRight,
-                        dlWidth;
+                        dlWidth,
+                        clipRectWidth;
 
                     if (minPointLength) {
                         widthDifference = minPointLength - length;
@@ -427,16 +438,17 @@
                             height: shapeArgs.height,
                             r: series.options.borderRadius
                         };
+
+                        clipRectWidth = Math.max(
+                            Math.round(length * partialFill + point.plotX - plotX),
+                            0
+                        );
                         point.clipRectArgs = {
-                            x: shapeArgs.x,
+                            x: xAxis.reversed ? // #10717
+                                shapeArgs.x + length - clipRectWidth :
+                                shapeArgs.x,
                             y: shapeArgs.y,
-                            width: Math.max(
-                                Math.round(
-                                    length * partialFill +
-                                (point.plotX - plotX)
-                                ),
-                                0
-                            ),
+                            width: clipRectWidth,
                             height: shapeArgs.height
                         };
                     }
@@ -493,13 +505,13 @@
 
                         // Original graphic
                         if (graphic) { // update
-                            point.graphicOriginal[verb](shapeArgs);
+                            graphic.rect[verb](shapeArgs);
                         } else {
                             point.graphic = graphic = renderer.g('point')
                                 .addClass(point.getClassName())
                                 .add(point.group || series.group);
 
-                            point.graphicOriginal = renderer[type](merge(shapeArgs))
+                            graphic.rect = renderer[type](merge(shapeArgs))
                                 .addClass(point.getClassName())
                                 .addClass('highcharts-partfill-original')
                                 .add(graphic);
@@ -507,35 +519,35 @@
 
                         // Partial fill graphic
                         if (partShapeArgs) {
-                            if (point.graphicOverlay) {
-                                point.graphicOverlay[verb](
+                            if (graphic.partRect) {
+                                graphic.partRect[verb](
                                     merge(partShapeArgs)
                                 );
-                                point.clipRect[verb](
+                                graphic.partialClipRect[verb](
                                     merge(clipRectArgs)
                                 );
 
                             } else {
 
-                                point.clipRect = renderer.clipRect(
+                                graphic.partialClipRect = renderer.clipRect(
                                     clipRectArgs.x,
                                     clipRectArgs.y,
                                     clipRectArgs.width,
                                     clipRectArgs.height
                                 );
 
-                                point.graphicOverlay = renderer[type](partShapeArgs)
+                                graphic.partRect = renderer[type](partShapeArgs)
                                     .addClass('highcharts-partfill-overlay')
                                     .add(graphic)
-                                    .clip(point.clipRect);
+                                    .clip(graphic.partialClipRect);
                             }
                         }
 
 
                         // Presentational
                         if (!series.chart.styledMode) {
-                            point
-                                .graphicOriginal[verb](
+                            graphic
+                                .rect[verb](
                                     pointAttr,
                                     animation
                                 )
@@ -560,8 +572,8 @@
                                 );
 
                                 pointAttr.fill = fill;
-                                point
-                                    .graphicOverlay[pointStateVerb](
+                                graphic
+                                    .partRect[pointStateVerb](
                                         pointAttr,
                                         animation
                                     )
@@ -619,6 +631,14 @@
                 //*/
 
             }, { // Point class properties
+
+                /**
+                 * The ending X value of the range point.
+                 * @name Highcharts.Point#x2
+                 * @type {number|undefined}
+                 * @requires modules/xrange
+                 */
+
                 /**
                  * Extend applyOptions so that `colorByPoint` for x-range means that one
                  * color is applied per Y axis category.

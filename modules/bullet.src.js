@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Bullet graph series type for Highcharts
  *
@@ -28,7 +28,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/bullet.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'modules/bullet.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * (c) 2010-2019 Kacper Madej
          *
@@ -37,8 +37,9 @@
 
 
 
+        var isNumber = U.isNumber;
+
         var pick = H.pick,
-            isNumber = H.isNumber,
             relativeLength = H.relativeLength,
             seriesType = H.seriesType,
             columnProto = H.seriesTypes.column.prototype;

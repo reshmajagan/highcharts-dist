@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * Indicator series type for Highstock
  *
@@ -251,7 +251,7 @@
 
         return multipleLinesMixin;
     });
-    _registerModule(_modules, 'indicators/bollinger-bands.src.js', [_modules['parts/Globals.js'], _modules['mixins/multipe-lines.js']], function (H, multipleLinesMixin) {
+    _registerModule(_modules, 'indicators/bollinger-bands.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/multipe-lines.js']], function (H, U, multipleLinesMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -260,8 +260,10 @@
 
 
 
+        var isArray = U.isArray;
+
+
         var merge = H.merge,
-            isArray = H.isArray,
             SMA = H.seriesTypes.sma;
 
         // Utils:

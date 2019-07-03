@@ -93,10 +93,11 @@ import Highcharts from './Globals.js';
 * @name Highcharts.SelectEventObject#yAxis
 * @type {Array<Highcharts.SelectDataObject>}
 */
-import './Utilities.js';
+import U from './Utilities.js';
+var isNumber = U.isNumber;
 import './Tooltip.js';
 import './Color.js';
-var H = Highcharts, addEvent = H.addEvent, attr = H.attr, charts = H.charts, color = H.color, css = H.css, defined = H.defined, extend = H.extend, find = H.find, fireEvent = H.fireEvent, isNumber = H.isNumber, isObject = H.isObject, offset = H.offset, pick = H.pick, splat = H.splat, Tooltip = H.Tooltip;
+var H = Highcharts, addEvent = H.addEvent, attr = H.attr, charts = H.charts, color = H.color, css = H.css, defined = H.defined, extend = H.extend, find = H.find, fireEvent = H.fireEvent, isObject = H.isObject, offset = H.offset, pick = H.pick, splat = H.splat, Tooltip = H.Tooltip;
 /* eslint-disable no-invalid-this, valid-jsdoc */
 /**
  * The mouse and touch tracker object. Each {@link Chart} item has one
@@ -185,7 +186,7 @@ Highcharts.Pointer.prototype = {
      *
      * @function Highcharts.Pointer#normalize
      *
-     * @param {global.Event} e
+     * @param {PointerEvent|TouchEvent} e
      *        Event object in standard browsers.
      *
      * @param {Highcharts.OffsetObject} [chartPosition]
@@ -272,18 +273,21 @@ Highcharts.Pointer.prototype = {
                 // The same zIndex, sort by array index:
             }
             else {
-                result = p1.series.index > p2.series.index ? -1 : 1;
+                result =
+                    p1.series.index > p2.series.index ?
+                        -1 :
+                        1;
             }
             return result;
         };
         series.forEach(function (s) {
             var noSharedTooltip = s.noSharedTooltip && shared, compareX = (!noSharedTooltip &&
                 s.options.findNearestPointBy.indexOf('y') < 0), point = s.searchPoint(e, compareX);
-            if (
-            // Check that we actually found a point on the series.
+            if ( // Check that we actually found a point on the series.
             isObject(point, true) &&
                 // Use the new point if it is closer.
-                (!isObject(closest, true) || (sort(closest, point) > 0))) {
+                (!isObject(closest, true) ||
+                    (sort(closest, point) > 0))) {
                 closest = point;
             }
         });
@@ -606,10 +610,12 @@ Highcharts.Pointer.prototype = {
                         point.setState(point.state, true);
                         if (point.series.isCartesian) {
                             if (point.series.xAxis.crosshair) {
-                                point.series.xAxis.drawCrosshair(null, point);
+                                point.series.xAxis
+                                    .drawCrosshair(null, point);
                             }
                             if (point.series.yAxis.crosshair) {
-                                point.series.yAxis.drawCrosshair(null, point);
+                                point.series.yAxis
+                                    .drawCrosshair(null, point);
                             }
                         }
                     });
@@ -1082,12 +1088,12 @@ Highcharts.Pointer.prototype = {
             H.unbindDocumentMouseUp = addEvent(ownerDoc, 'mouseup', pointer.onDocumentMouseUp);
         }
         if (H.hasTouch) {
-            container.ontouchstart = function (e) {
+            addEvent(container, 'touchstart', function (e) {
                 pointer.onContainerTouchStart(e);
-            };
-            container.ontouchmove = function (e) {
+            });
+            addEvent(container, 'touchmove', function (e) {
                 pointer.onContainerTouchMove(e);
-            };
+            });
             if (!H.unbindDocumentTouchEnd) {
                 H.unbindDocumentTouchEnd = addEvent(ownerDoc, 'touchend', pointer.onDocumentTouchEnd);
             }

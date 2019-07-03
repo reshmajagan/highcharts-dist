@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts Gantt JS v7.1.2-modified (2019-07-03)
  *
  * GridAxis
  *
@@ -28,7 +28,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'parts-gantt/GridAxis.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'parts-gantt/GridAxis.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * (c) 2016 Highsoft AS
          * Authors: Lars A. V. Cabrera
@@ -38,14 +38,15 @@
 
 
 
+        var isArray = U.isArray,
+            isNumber = U.isNumber;
+
         var addEvent = H.addEvent,
             argsToArray = function (args) {
                 return Array.prototype.slice.call(args, 1);
             },
             dateFormat = H.dateFormat,
             defined = H.defined,
-            isArray = H.isArray,
-            isNumber = H.isNumber,
             isObject = function (x) {
                 // Always use strict mode
                 return H.isObject(x, true);
@@ -165,19 +166,6 @@
         };
 
         /**
-         * Checks if an axis is a navigator axis.
-         *
-         * @private
-         * @function Highcharts.Axis#isNavigatorAxis
-         *
-         * @return {boolean}
-         *         true if axis is found in axis.chart.navigator
-         */
-        Axis.prototype.isNavigatorAxis = function () {
-            return /highcharts-navigator-[xy]axis/.test(this.options.className);
-        };
-
-        /**
          * Checks if an axis is the outer axis in its dimension. Since
          * axes are placed outwards in order, the axis with the highest
          * index is the outermost axis.
@@ -195,34 +183,27 @@
         Axis.prototype.isOuterAxis = function () {
             var axis = this,
                 chart = axis.chart,
+                columnIndex = axis.columnIndex,
+                columns = axis.linkedParent && axis.linkedParent.columns ||
+                    axis.columns,
+                parentAxis = columnIndex ? axis.linkedParent : axis,
                 thisIndex = -1,
-                isOuter = true;
+                lastIndex = 0;
 
-            chart.axes.forEach(function (otherAxis, index) {
-                if (otherAxis.side === axis.side && !otherAxis.isNavigatorAxis()) {
-                    if (otherAxis === axis) {
+            chart[axis.coll].forEach(function (otherAxis, index) {
+                if (otherAxis.side === axis.side && !otherAxis.options.isInternal) {
+                    lastIndex = index;
+                    if (otherAxis === parentAxis) {
                         // Get the index of the axis in question
                         thisIndex = index;
-
-                        // Check thisIndex >= 0 in case thisIndex has
-                        // not been found yet
-                    } else if (thisIndex >= 0 && index > thisIndex) {
-                        // There was an axis on the same side with a
-                        // higher index.
-                        isOuter = false;
                     }
                 }
             });
 
-            if (isOuter && isNumber(axis.columnIndex)) {
-                var columns = axis.linkedParent && axis.linkedParent.columns ||
-                    axis.columns;
-                isOuter = columns.length === axis.columnIndex;
-            }
-
-            // There were either no other axes on the same side,
-            // or the other axes were not farther from the chart
-            return isOuter;
+            return (
+                lastIndex === thisIndex &&
+                (isNumber(columnIndex) ? columns.length === columnIndex : true)
+            );
         };
 
         /**

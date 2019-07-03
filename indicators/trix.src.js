@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * Indicator series type for Highstock
  *
@@ -102,7 +102,7 @@
             'trix',
             'tema',
             /**
-             * Normalized average true range indicator (NATR). This series requires
+             * Triple exponential average (TRIX) oscillator. This series requires
              * `linkedTo` option to be set.
              *
              * Requires https://code.highcharts.com/stock/indicators/ema.js
@@ -138,7 +138,8 @@
                         }
                     );
                 },
-                getPoint: function (
+                // TRIX is calculated using TEMA so we just extend getTemaPoint method.
+                getTemaPoint: function (
                     xVal,
                     tripledPeriod,
                     EMAlevels,

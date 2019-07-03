@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Pareto series type for Highcharts
  *
@@ -246,16 +246,14 @@
                  *         Returns array of points [x,y]
                  */
                 setDerivedData: function () {
-                    if (this.baseSeries.yData.length > 1) {
-                        var xValues = this.baseSeries.xData,
-                            yValues = this.baseSeries.yData,
-                            sum = this.sumPointsPercents(yValues, xValues, null, true);
+                    var xValues = this.baseSeries.xData,
+                        yValues = this.baseSeries.yData,
+                        sum = this.sumPointsPercents(yValues, xValues, null, true);
 
-                        this.setData(
-                            this.sumPointsPercents(yValues, xValues, sum, false),
-                            false
-                        );
-                    }
+                    this.setData(
+                        this.sumPointsPercents(yValues, xValues, sum, false),
+                        false
+                    );
                 },
                 /**
                  * Calculate y sum and each percent point.

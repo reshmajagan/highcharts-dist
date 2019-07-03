@@ -10,7 +10,11 @@
 'use strict';
 
 import H from '../parts/Globals.js';
-import '../parts/Utilities.js';
+
+import U from '../parts/Utilities.js';
+var isNumber = U.isNumber,
+    isString = U.isString;
+
 import './GridAxis.js';
 import Tree from './Tree.js';
 import mixinTreeSeries from '../mixins/tree-series.js';
@@ -29,12 +33,10 @@ var addEvent = H.addEvent,
     isBoolean = function (x) {
         return typeof x === 'boolean';
     },
-    isNumber = H.isNumber,
     isObject = function (x) {
         // Always use strict mode.
         return H.isObject(x, true);
     },
-    isString = H.isString,
     pick = H.pick,
     wrap = H.wrap,
     GridAxis = H.Axis,
@@ -225,7 +227,7 @@ var renderLabelIcon = function (tick, params) {
             y: labelBox.y - (height / 2)
         },
         rotation = params.collapsed ? 90 : 180,
-        shouldRender = params.show && H.isNumber(iconCenter.y);
+        shouldRender = params.show && isNumber(iconCenter.y);
 
     if (isNew) {
         tick.labelIcon = icon = renderer.path(renderer.symbols[options.type](
@@ -491,11 +493,15 @@ var onBeforeRender = function (e) {
             // Check whether any of series is rendering for the first time,
             // visibility has changed, or its data is dirty,
             // and only then update. #10570, #10580
-            isDirty = axis.series.some(function (series) {
-                return !series.hasRendered ||
-                    series.isDirtyData ||
-                    series.isDirty;
-            });
+            // Also check if mapOfPosToGridNode exists. #10887
+            isDirty = (
+                !axis.mapOfPosToGridNode ||
+                axis.series.some(function (series) {
+                    return !series.hasRendered ||
+                        series.isDirtyData ||
+                        series.isDirty;
+                })
+            );
 
             if (isDirty) {
                 // Concatenate data from all series assigned to this axis.
@@ -611,8 +617,6 @@ override(GridAxis.prototype, {
                         /**
                         * Specify the level which the options within this object
                         * applies to.
-                        *
-                        * @sample {gantt} gantt/treegrid-axis/labels-levels
                         *
                         * @type      {number}
                         * @product   gantt

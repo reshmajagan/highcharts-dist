@@ -13,6 +13,18 @@ import * as _Highcharts from "../highcharts";
  */
 export function factory(highcharts: typeof Highcharts): void;
 declare module "../highcharts" {
+    interface Point {
+        /**
+         * The ending X value of the range point.
+         */
+        x2?: number;
+    }
+    interface PointOptionsObject {
+        /**
+         * The ending X value of the range point.
+         */
+        x2?: number;
+    }
     /**
      * Factory function for Gantt charts.
      *
@@ -53,8 +65,10 @@ declare module "../highcharts" {
      *
      * @param vertical
      *        If vertical scrollbar, swap x-y values.
+     *
+     * @return Rotated path.
      */
-    function swapXY(path: Array<(number|string)>, vertical: boolean): Array<(number|string)>;
+    function swapXY(path: SVGPathArray, vertical: boolean): SVGPathArray;
     /**
      * Returns the first break found where the x is larger then break.from and
      * smaller then break.to.

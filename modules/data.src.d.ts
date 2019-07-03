@@ -170,6 +170,17 @@ declare module "../highcharts.src" {
      * Creates a data object to parse data for a chart.
      */
     function data(dataOptions: DataOptions, chartOptions?: Options, chart?: Chart): Data;
+    /**
+     * Get a JSON resource over XHR, also supporting CORS without preflight.
+     *
+     * @param url
+     *        The URL to load.
+     *
+     * @param success
+     *        The success callback. For error handling, use the
+     *        `Highcharts.ajax` function instead.
+     */
+    function getJSON(url: string, success: Function): void;
 }
 export default factory;
 export let Highcharts: typeof _Highcharts;

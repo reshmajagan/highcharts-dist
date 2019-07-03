@@ -1,5 +1,5 @@
 /**
- * @license @product.name@ JS v@product.version@ (@product.date@)
+ * @license Highmaps JS v7.1.2-modified (2019-07-03)
  * @module highcharts/modules/map
  * @requires highcharts
  *

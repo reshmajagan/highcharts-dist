@@ -454,6 +454,7 @@ seriesType(
         requireSorting: false,
         directTouch: true,
         noSharedTooltip: true,
+        pointArrayMap: ['from', 'to'],
         trackerGroups: ['group', 'markerGroup', 'dataLabelsGroup'],
         drawTracker: H.TrackerMixin.drawTrackerPoint,
         // Animation is run in `series.simulation`.
@@ -526,6 +527,20 @@ seriesType(
             this.data.forEach(function (link) {
                 link.formatPrefix = 'link';
             });
+
+            this.indexateNodes();
+        },
+
+        /**
+         * Set index for each node. Required for proper `node.update()`.
+         * Note that links are indexated out of the box in `generatePoints()`.
+         *
+         * @private
+         */
+        indexateNodes: function () {
+            this.nodes.forEach(function (node, index) {
+                node.index = index;
+            });
         },
 
         /**
@@ -538,7 +553,13 @@ seriesType(
             var attribs = Series.prototype.markerAttribs
                 .call(this, point, state);
 
-            attribs.x = point.plotX - (attribs.width / 2 || 0);
+            // series.render() is called before initial positions are set:
+            if (!defined(point.plotY)) {
+                attribs.y = 0;
+            }
+
+            attribs.x = (point.plotX || 0) - (attribs.width / 2 || 0);
+
             return attribs;
         },
 
@@ -1046,9 +1067,13 @@ seriesType(
          */
         destroy: function () {
             if (this.isNode) {
-                this.linksFrom.forEach(
-                    function (linkFrom) {
-                        linkFrom.destroyElements();
+                this.linksFrom.concat(this.linksTo).forEach(
+                    function (link) {
+                        // Removing multiple nodes at the same time
+                        // will try to remove link between nodes twice
+                        if (link.destroyElements) {
+                            link.destroyElements();
+                        }
                     }
                 );
                 this.series.layout.removeNode(this);
@@ -1132,14 +1157,6 @@ seriesType(
  * @type      {string}
  * @product   highcharts
  * @apioption series.networkgraph.data.to
- */
-
-/**
- * The weight of the link.
- *
- * @type      {number}
- * @product   highcharts
- * @apioption series.networkgraph.data.weight
  */
 
 /**

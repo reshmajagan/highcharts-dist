@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * Drag-panes module
  *
@@ -29,7 +29,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/drag-panes.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'modules/drag-panes.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * Plugin for resizing axes / panes in a chart.
          *
@@ -41,10 +41,12 @@
 
 
 
+        var isNumber = U.isNumber;
+
+
         var hasTouch = H.hasTouch,
             merge = H.merge,
             wrap = H.wrap,
-            isNumber = H.isNumber,
             addEvent = H.addEvent,
             relativeLength = H.relativeLength,
             objectEach = H.objectEach,

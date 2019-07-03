@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * Indicator series type for Highstock
  *
@@ -81,7 +81,7 @@
 
         return reduceArrayMixin;
     });
-    _registerModule(_modules, 'indicators/williams-r.src.js', [_modules['parts/Globals.js'], _modules['mixins/reduce-array.js']], function (H, reduceArrayMixin) {
+    _registerModule(_modules, 'indicators/williams-r.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/reduce-array.js']], function (H, U, reduceArrayMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -90,8 +90,10 @@
 
 
 
-        var isArray = H.isArray,
-            getArrayExtremes = reduceArrayMixin.getArrayExtremes;
+        var isArray = U.isArray;
+
+
+        var getArrayExtremes = reduceArrayMixin.getArrayExtremes;
 
         /**
          * The Williams %R series type.

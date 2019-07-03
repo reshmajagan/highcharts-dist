@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * All technical indicators for Highstock
  *
@@ -77,7 +77,7 @@
 
         return requiredIndicatorMixin;
     });
-    _registerModule(_modules, 'indicators/indicators.src.js', [_modules['parts/Globals.js'], _modules['mixins/indicator-required.js']], function (H, requiredIndicatorMixin) {
+    _registerModule(_modules, 'indicators/indicators.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/indicator-required.js']], function (H, U, requiredIndicatorMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -86,10 +86,12 @@
 
 
 
+        var isArray = U.isArray;
+
+
         var pick = H.pick,
             error = H.error,
             Series = H.Series,
-            isArray = H.isArray,
             addEvent = H.addEvent,
             seriesType = H.seriesType,
             seriesTypes = H.seriesTypes,
@@ -634,7 +636,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/ao.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/ao.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -643,8 +645,9 @@
 
 
 
+        var isArray = U.isArray;
+
         var correctFloat = H.correctFloat,
-            isArray = H.isArray,
             noop = H.noop;
 
         /**
@@ -1363,7 +1366,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/atr.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/atr.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -1372,8 +1375,9 @@
 
 
 
-        var isArray = H.isArray,
-            seriesType = H.seriesType,
+        var isArray = U.isArray;
+
+        var seriesType = H.seriesType,
             UNDEFINED;
 
         // Utils:
@@ -1514,7 +1518,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/bollinger-bands.src.js', [_modules['parts/Globals.js'], _modules['mixins/multipe-lines.js']], function (H, multipleLinesMixin) {
+    _registerModule(_modules, 'indicators/bollinger-bands.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/multipe-lines.js']], function (H, U, multipleLinesMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -1523,8 +1527,10 @@
 
 
 
+        var isArray = U.isArray;
+
+
         var merge = H.merge,
-            isArray = H.isArray,
             SMA = H.seriesTypes.sma;
 
         // Utils:
@@ -1722,7 +1728,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/cci.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/cci.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -1731,8 +1737,9 @@
 
 
 
-        var isArray = H.isArray,
-            seriesType = H.seriesType;
+        var isArray = U.isArray;
+
+        var seriesType = H.seriesType;
 
         // Utils:
         function sumArray(array) {
@@ -2239,7 +2246,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/ema.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/ema.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -2248,8 +2255,9 @@
 
 
 
-        var isArray = H.isArray,
-            seriesType = H.seriesType,
+        var isArray = U.isArray;
+
+        var seriesType = H.seriesType,
             correctFloat = H.correctFloat;
 
         /**
@@ -2570,7 +2578,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/dema.src.js', [_modules['parts/Globals.js'], _modules['mixins/indicator-required.js']], function (H, requiredIndicatorMixin) {
+    _registerModule(_modules, 'indicators/dema.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/indicator-required.js']], function (H, U, requiredIndicatorMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -2579,8 +2587,10 @@
 
 
 
-        var isArray = H.isArray,
-            EMAindicator = H.seriesTypes.ema,
+        var isArray = U.isArray;
+
+
+        var EMAindicator = H.seriesTypes.ema,
             requiredIndicator = requiredIndicatorMixin,
             correctFloat = H.correctFloat;
 
@@ -2597,7 +2607,7 @@
             'dema',
             'ema',
             /**
-             * Normalized average true range indicator (NATR). This series requires
+             * Double exponential moving average (DEMA) indicator. This series requires
              * `linkedTo` option to be set and should be loaded after the
              * `stock/indicators/indicators.js` and `stock/indicators/ema.js`.
              *
@@ -2760,7 +2770,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/tema.src.js', [_modules['parts/Globals.js'], _modules['mixins/indicator-required.js']], function (H, requiredIndicatorMixin) {
+    _registerModule(_modules, 'indicators/tema.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/indicator-required.js']], function (H, U, requiredIndicatorMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -2769,8 +2779,10 @@
 
 
 
-        var isArray = H.isArray,
-            EMAindicator = H.seriesTypes.ema,
+        var isArray = U.isArray;
+
+
+        var EMAindicator = H.seriesTypes.ema,
             requiredIndicator = requiredIndicatorMixin,
             correctFloat = H.correctFloat;
 
@@ -2787,7 +2799,7 @@
             'tema',
             'ema',
             /**
-             * Normalized average true range indicator (NATR). This series requires
+             * Triple exponential moving average (TEMA) indicator. This series requires
              * `linkedTo` option to be set and should be loaded after the
              * `stock/indicators/indicators.js` and `stock/indicators/ema.js`.
              *
@@ -2841,7 +2853,7 @@
                         SMA
                     );
                 },
-                getPoint: function (
+                getTemaPoint: function (
                     xVal,
                     tripledPeriod,
                     EMAlevels,
@@ -2966,7 +2978,7 @@
                                     EMAlevels.prevLevel3,
                                     SMA
                                 )[1];
-                                TEMAPoint = this.getPoint(
+                                TEMAPoint = this.getTemaPoint(
                                     xVal,
                                     tripledPeriod,
                                     EMAlevels,
@@ -3031,7 +3043,7 @@
             'trix',
             'tema',
             /**
-             * Normalized average true range indicator (NATR). This series requires
+             * Triple exponential average (TRIX) oscillator. This series requires
              * `linkedTo` option to be set.
              *
              * Requires https://code.highcharts.com/stock/indicators/ema.js
@@ -3067,7 +3079,8 @@
                         }
                     );
                 },
-                getPoint: function (
+                // TRIX is calculated using TEMA so we just extend getTemaPoint method.
+                getTemaPoint: function (
                     xVal,
                     tripledPeriod,
                     EMAlevels,
@@ -3248,7 +3261,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/ichimoku-kinko-hyo.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/ichimoku-kinko-hyo.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -3257,11 +3270,12 @@
 
 
 
+        var isArray = U.isArray;
+
         var UNDEFINED,
             seriesType = H.seriesType,
             merge = H.merge,
             color = H.color,
-            isArray = H.isArray,
             defined = H.defined,
             SMA = H.seriesTypes.sma;
 
@@ -4707,7 +4721,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/mfi.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/mfi.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  Money Flow Index indicator for Highstock
@@ -4720,7 +4734,7 @@
 
 
 
-        var isArray = H.isArray;
+        var isArray = U.isArray;
 
         // Utils:
         function sumArray(array) {
@@ -4905,7 +4919,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/momentum.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/momentum.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -4914,8 +4928,9 @@
 
 
 
-        var isArray = H.isArray,
-            seriesType = H.seriesType;
+        var isArray = U.isArray;
+
+        var seriesType = H.seriesType;
 
         function populateAverage(points, xVal, yVal, i, period) {
             var mmY = yVal[i - 1][3] - yVal[i - period - 1][3],
@@ -5098,7 +5113,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/pivot-points.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/pivot-points.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -5107,8 +5122,9 @@
 
 
 
+        var isArray = U.isArray;
+
         var defined = H.defined,
-            isArray = H.isArray,
             SMA = H.seriesTypes.sma;
 
         function destroyExtraLabels(point, functionName) {
@@ -5811,7 +5827,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/price-envelopes.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/price-envelopes.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -5820,8 +5836,9 @@
 
 
 
+        var isArray = U.isArray;
+
         var merge = H.merge,
-            isArray = H.isArray,
             SMA = H.seriesTypes.sma;
 
         /**
@@ -6369,7 +6386,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/roc.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/roc.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  (c) 2010-2019 Kacper Madej
@@ -6380,8 +6397,9 @@
 
 
 
-        var seriesType = H.seriesType,
-            isArray = H.isArray;
+        var isArray = U.isArray;
+
+        var seriesType = H.seriesType;
 
         // Utils:
         function populateAverage(xVal, yVal, i, period, index) {
@@ -6518,7 +6536,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/rsi.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/rsi.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -6527,7 +6545,7 @@
 
 
 
-        var isArray = H.isArray;
+        var isArray = U.isArray;
 
         // Utils:
         function toFixed(a, n) {
@@ -6681,7 +6699,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/stochastic.src.js', [_modules['parts/Globals.js'], _modules['mixins/reduce-array.js'], _modules['mixins/multipe-lines.js']], function (H, reduceArrayMixin, multipleLinesMixin) {
+    _registerModule(_modules, 'indicators/stochastic.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/reduce-array.js'], _modules['mixins/multipe-lines.js']], function (H, U, reduceArrayMixin, multipleLinesMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -6690,8 +6708,10 @@
 
 
 
+        var isArray = U.isArray;
+
+
         var merge = H.merge,
-            isArray = H.isArray,
             SMA = H.seriesTypes.sma,
             getArrayExtremes = reduceArrayMixin.getArrayExtremes;
 
@@ -6872,7 +6892,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/supertrend.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/supertrend.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -6881,9 +6901,10 @@
 
 
 
+        var isArray = U.isArray;
+
         var ATR = H.seriesTypes.atr,
             SMA = H.seriesTypes.sma,
-            isArray = H.isArray,
             merge = H.merge,
             correctFloat = H.correctFloat;
 
@@ -7416,7 +7437,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/volume-by-price.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/volume-by-price.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  (c) 2010-2019 Paweł Dalek
@@ -7428,6 +7449,8 @@
          * */
 
 
+
+        var isArray = U.isArray;
 
         // Utils
         function arrayExtremesOHLC(data) {
@@ -7849,7 +7872,7 @@
                     }
 
                     // Checks if series data fits the OHLC format
-                    isOHLC = H.isArray(yValues[0]);
+                    isOHLC = isArray(yValues[0]);
 
                     if (isOHLC && yValues[0].length !== 4) {
                         return H.error(
@@ -8093,7 +8116,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/vwap.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/vwap.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  (c) 2010-2019 Paweł Dalek
@@ -8106,8 +8129,9 @@
 
 
 
-        var isArray = H.isArray,
-            seriesType = H.seriesType;
+        var isArray = U.isArray;
+
+        var seriesType = H.seriesType;
 
         /**
          * The Volume Weighted Average Price (VWAP) series type.
@@ -8282,7 +8306,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/williams-r.src.js', [_modules['parts/Globals.js'], _modules['mixins/reduce-array.js']], function (H, reduceArrayMixin) {
+    _registerModule(_modules, 'indicators/williams-r.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/reduce-array.js']], function (H, U, reduceArrayMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -8291,8 +8315,10 @@
 
 
 
-        var isArray = H.isArray,
-            getArrayExtremes = reduceArrayMixin.getArrayExtremes;
+        var isArray = U.isArray;
+
+
+        var getArrayExtremes = reduceArrayMixin.getArrayExtremes;
 
         /**
          * The Williams %R series type.
@@ -8409,7 +8435,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/wma.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/wma.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  (c) 2010-2019 Kacper Madej
@@ -8420,8 +8446,9 @@
 
 
 
-        var isArray = H.isArray,
-            seriesType = H.seriesType;
+        var isArray = U.isArray;
+
+        var seriesType = H.seriesType;
 
         // Utils:
         function accumulateAverage(points, xVal, yVal, i, index) {
@@ -8776,7 +8803,7 @@
          */
 
     });
-    _registerModule(_modules, 'indicators/regressions.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'indicators/regressions.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  (c) 2010-2019 Kamil Kulig
@@ -8787,8 +8814,9 @@
 
 
 
-        var seriesType = H.seriesType,
-            isArray = H.isArray;
+        var isArray = U.isArray;
+
+        var seriesType = H.seriesType;
 
         /**
          * Linear regression series type.

@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Module for adding patterns and images as point fills.
  *
@@ -303,7 +303,8 @@
 
             if (!id) {
                 this.idCounter = this.idCounter || 0;
-                id = 'highcharts-pattern-' + this.idCounter;
+                id = 'highcharts-pattern-' + (this.chartIndex || 0) + '-' +
+                    this.idCounter;
                 ++this.idCounter;
             }
 
@@ -502,8 +503,8 @@
                 if (forceHashId || !pattern.id) {
                     // Make a copy so we don't accidentally edit options when setting ID
                     pattern = merge({}, pattern);
-                    pattern.id = 'highcharts-pattern-' + hashFromObject(pattern) +
-                        hashFromObject(pattern, true);
+                    pattern.id = 'highcharts-pattern-' + (this.chartIndex || 0) + '-' +
+                        hashFromObject(pattern) + hashFromObject(pattern, true);
                 }
 
                 // Add it. This function does nothing if an element with this ID
@@ -538,7 +539,7 @@
         // resize, as the bounding boxes are not available until then.
         H.addEvent(H.Chart, 'endResize', function () {
             if (
-                (this.renderer.defIds || []).filter(function (id) {
+                (this.renderer && this.renderer.defIds || []).filter(function (id) {
                     return id && id.indexOf && id.indexOf('highcharts-pattern-') === 0;
                 }).length
             ) {
@@ -611,7 +612,9 @@
 
         // Add the predefined patterns
         H.Chart.prototype.callbacks.push(function (chart) {
-            var colors = H.getOptions().colors;
+            var colors = H.getOptions().colors,
+                index = chart.index,
+                forExport = chart.options.chart.forExport;
 
             [
                 'M 0 0 L 10 10 M 9 -1 L 11 1 M -1 9 L 1 11',
@@ -626,7 +629,8 @@
                 'M 0 0 L 5 10 L 10 0'
             ].forEach(function (pattern, i) {
                 chart.renderer.addPattern({
-                    id: 'highcharts-default-pattern-' + i,
+                    id: 'highcharts-default-pattern-' +
+                        (index && !forExport ? index + '-' : '') + i,
                     path: pattern,
                     color: colors[i],
                     width: 10,

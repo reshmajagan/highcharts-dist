@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Item series type for Highcharts
  *
@@ -28,7 +28,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/item-series.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'modules/item-series.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  (c) 2019 Torstein Honsi
@@ -39,6 +39,9 @@
          *
          * */
 
+
+
+        var isNumber = U.isNumber;
 
 
         var extend = H.extend,
@@ -123,7 +126,7 @@
                  */
                 layout: 'vertical',
                 /**
-                 * @extends   plotOptions.line.marker
+                 * @extends plotOptions.series.marker
                  */
                 marker: merge(
                     H.defaultOptions.plotOptions.line.marker,
@@ -158,8 +161,8 @@
                         this.slots = [];
                     }
                     if (
-                        H.isNumber(this.options.startAngle) &&
-                        H.isNumber(this.options.endAngle)
+                        isNumber(this.options.startAngle) &&
+                        isNumber(this.options.endAngle)
                     ) {
                         H.seriesTypes.pie.prototype.translate.call(this);
                         this.slots = this.getSlots();

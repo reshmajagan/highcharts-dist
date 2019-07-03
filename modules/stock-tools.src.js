@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * Advanced Highstock tools
  *
@@ -29,7 +29,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/stock-tools-bindings.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'modules/stock-tools-bindings.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /**
          *
          *  Events generator for Stock tools
@@ -69,12 +69,13 @@
 
 
 
+        var isNumber = U.isNumber;
+
         var fireEvent = H.fireEvent,
             defined = H.defined,
             pick = H.pick,
             extend = H.extend,
             merge = H.merge,
-            isNumber = H.isNumber,
             correctFloat = H.correctFloat,
             bindingsUtils = H.NavigationBindings.prototype.utils,
             PREFIX = 'highcharts-';
@@ -319,7 +320,7 @@
         bindingsUtils.updateHeight = function (e, annotation) {
             annotation.update({
                 typeOptions: {
-                    height: this.chart.yAxis[0].toValue(e.chartY) -
+                    height: this.chart.pointer.getCoordinates(e).yAxis[0].value -
                         annotation.options.typeOptions.points[1].y
                 }
             });
@@ -328,8 +329,9 @@
         // @todo
         // Consider using getHoverData(), but always kdTree (columns?)
         bindingsUtils.attractToPoint = function (e, chart) {
-            var x = chart.xAxis[0].toValue(e.chartX),
-                y = chart.yAxis[0].toValue(e.chartY),
+            var coords = chart.pointer.getCoordinates(e),
+                x = coords.xAxis[0].value,
+                y = coords.yAxis[0].value,
                 distX = Number.MAX_VALUE,
                 closestPoint;
 
@@ -386,8 +388,9 @@
         bindingsUtils.updateNthPoint = function (startIndex) {
             return function (e, annotation) {
                 var options = annotation.options.typeOptions,
-                    x = this.chart.xAxis[0].toValue(e.chartX),
-                    y = this.chart.yAxis[0].toValue(e.chartY);
+                    coords = this.chart.pointer.getCoordinates(e),
+                    x = coords.xAxis[0].value,
+                    y = coords.yAxis[0].value;
 
                 options.points.forEach(function (point, index) {
                     if (index >= startIndex) {
@@ -674,8 +677,7 @@
                 className: 'highcharts-segment',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'crookedLine',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -684,11 +686,11 @@
                             type: type,
                             typeOptions: {
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -715,8 +717,7 @@
                 className: 'highcharts-arrow-segment',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'crookedLine',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -728,11 +729,11 @@
                                     markerEnd: 'arrow'
                                 },
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -759,8 +760,7 @@
                 className: 'highcharts-ray',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'crookedLine',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -770,11 +770,11 @@
                             typeOptions: {
                                 type: 'ray',
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -801,8 +801,7 @@
                 className: 'highcharts-arrow-ray',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'infinityLine',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -815,11 +814,11 @@
                                     markerEnd: 'arrow'
                                 },
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -845,8 +844,7 @@
                 className: 'highcharts-infinity-line',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'infinityLine',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -856,11 +854,11 @@
                             typeOptions: {
                                 type: 'line',
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -887,8 +885,7 @@
                 className: 'highcharts-arrow-infinity-line',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'infinityLine',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -901,11 +898,11 @@
                                     markerEnd: 'arrow'
                                 },
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -931,8 +928,7 @@
                 className: 'highcharts-horizontal-line',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'infinityLine',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -942,8 +938,8 @@
                             typeOptions: {
                                 type: 'horizontalLine',
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -965,8 +961,7 @@
                 className: 'highcharts-vertical-line',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'infinityLine',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -976,8 +971,8 @@
                             typeOptions: {
                                 type: 'verticalLine',
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -1001,8 +996,7 @@
                 className: 'highcharts-crooked3',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'crookedLine',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -1011,14 +1005,14 @@
                             type: type,
                             typeOptions: {
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -1046,8 +1040,7 @@
                 className: 'highcharts-crooked5',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'crookedLine',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -1056,20 +1049,20 @@
                             type: type,
                             typeOptions: {
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -1099,8 +1092,7 @@
                 className: 'highcharts-elliott3',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'elliottWave',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -1109,17 +1101,17 @@
                             type: type,
                             typeOptions: {
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             },
                             labelOptions: {
@@ -1153,8 +1145,7 @@
                 className: 'highcharts-elliott5',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'elliottWave',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -1163,23 +1154,23 @@
                             type: type,
                             typeOptions: {
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             },
                             labelOptions: {
@@ -1215,8 +1206,7 @@
                 className: 'highcharts-measure-x',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'measure',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -1226,8 +1216,8 @@
                             typeOptions: {
                                 selectType: 'x',
                                 point: {
-                                    x: x,
-                                    y: y,
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value,
                                     xAxis: 0,
                                     yAxis: 0
                                 },
@@ -1244,8 +1234,7 @@
                                     width: 0,
                                     height: 0,
                                     strokeWidth: 0,
-                                    stroke: '#ffffff',
-                                    fill: 'red'
+                                    stroke: '#ffffff'
                                 }
                             },
                             labelOptions: {
@@ -1277,8 +1266,7 @@
                 className: 'highcharts-measure-y',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'measure',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -1288,8 +1276,8 @@
                             typeOptions: {
                                 selectType: 'y',
                                 point: {
-                                    x: x,
-                                    y: y,
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value,
                                     xAxis: 0,
                                     yAxis: 0
                                 },
@@ -1338,8 +1326,7 @@
                 className: 'highcharts-measure-xy',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'measure',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -1349,8 +1336,8 @@
                             typeOptions: {
                                 selectType: 'xy',
                                 point: {
-                                    x: x,
-                                    y: y,
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value,
                                     xAxis: 0,
                                     yAxis: 0
                                 },
@@ -1398,8 +1385,7 @@
                 className: 'highcharts-fibonacci',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'fibonacci',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -1408,11 +1394,11 @@
                             type: type,
                             typeOptions: {
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             },
                             labelOptions: {
@@ -1445,8 +1431,7 @@
                 className: 'highcharts-parallel-channel',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'tunnel',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -1455,11 +1440,11 @@
                             type: type,
                             typeOptions: {
                                 points: [{
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }]
                             }
                         },
@@ -1487,8 +1472,7 @@
                 className: 'highcharts-pitchfork',
                 /** @ignore */
                 start: function (e) {
-                    var x = this.chart.xAxis[0].toValue(e.chartX),
-                        y = this.chart.yAxis[0].toValue(e.chartY),
+                    var coords = this.chart.pointer.getCoordinates(e),
                         type = 'pitchfork',
                         navigation = this.chart.options.navigation,
                         bindings = navigation && navigation.bindings,
@@ -1497,19 +1481,19 @@
                             type: type,
                             typeOptions: {
                                 points: [{
-                                    x: x,
-                                    y: y,
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value,
                                     controlPoint: {
                                         style: {
                                             fill: 'red'
                                         }
                                     }
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }, {
-                                    x: x,
-                                    y: y
+                                    x: coords.xAxis[0].value,
+                                    y: coords.yAxis[0].value
                                 }],
                                 innerBackground: {
                                     fill: 'rgba(100, 170, 255, 0.8)'
@@ -1983,6 +1967,11 @@
             /**
              * Indicators bindings. Includes `init` event to show a popup.
              *
+             * Note: In order to show base series from the chart in the popup's
+             * dropdown each series requires
+             * [series.id](https://api.highcharts.com/highstock/series.line.id) to be
+             * defined.
+             *
              * @type    {Highcharts.StockToolsBindingsObject}
              * @product highstock
              * @default {"className": "highcharts-indicators", "init": function() {}, "annotationOptions": {}}
@@ -2117,7 +2106,7 @@
         });
 
     });
-    _registerModule(_modules, 'modules/stock-tools-gui.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'modules/stock-tools-gui.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * GUI generator for Stock tools
          *
@@ -2126,10 +2115,11 @@
          * License: www.highcharts.com/license
          */
 
+        var isArray = U.isArray;
+
         var addEvent = H.addEvent,
             createElement = H.createElement,
             pick = H.pick,
-            isArray = H.isArray,
             fireEvent = H.fireEvent,
             getStyle = H.getStyle,
             merge = H.merge,
@@ -2326,7 +2316,7 @@
                      * Path where Highcharts will look for icons. Change this to use
                      * icons from a different server.
                      */
-                    iconsURL: 'https://code.highcharts.com/7.1.2/gfx/stock-icons/',
+                    iconsURL: 'https://code.highcharts.com/7.1.2-modified/gfx/stock-icons/',
                     /**
                      * A collection of strings pointing to config options for the
                      * toolbar items. Each name refers to unique key from definitions

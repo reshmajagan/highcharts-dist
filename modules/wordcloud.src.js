@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * (c) 2016-2019 Highsoft AS
  * Authors: Jon Arild Nygard
@@ -107,12 +107,13 @@
 
         return drawPoint;
     });
-    _registerModule(_modules, 'mixins/polygon.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'mixins/polygon.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
+
+        var isArray = U.isArray,
+            isNumber = U.isNumber;
 
         var deg2rad = H.deg2rad,
-            find = H.find,
-            isArray = H.isArray,
-            isNumber = H.isNumber;
+            find = H.find;
 
         /**
          * Alternative solution to correctFloat.
@@ -401,7 +402,7 @@
 
         return collision;
     });
-    _registerModule(_modules, 'modules/wordcloud.src.js', [_modules['parts/Globals.js'], _modules['mixins/draw-point.js'], _modules['mixins/polygon.js']], function (H, drawPoint, polygon) {
+    _registerModule(_modules, 'modules/wordcloud.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/draw-point.js'], _modules['mixins/polygon.js']], function (H, U, drawPoint, polygon) {
         /* *
          * Experimental Highcharts module which enables visualization of a word cloud.
          *
@@ -414,9 +415,11 @@
 
 
 
+        var isArray = U.isArray,
+            isNumber = U.isNumber;
+
+
         var extend = H.extend,
-            isArray = H.isArray,
-            isNumber = H.isNumber,
             isObject = H.isObject,
             merge = H.merge,
             noop = H.noop,
@@ -779,12 +782,12 @@
                 isNumber(index) &&
                 isNumber(from) &&
                 isNumber(to) &&
-                orientations > -1 &&
+                orientations > 0 &&
                 index > -1 &&
                 to > from
             ) {
                 range = to - from;
-                intervals = range / (orientations - 1);
+                intervals = range / (orientations - 1 || 1);
                 orientation = index % orientations;
                 result = from + (orientation * intervals);
             }
@@ -1066,7 +1069,7 @@
                 from: 0,
                 /**
                  * The number of possible orientations for a word, within the range of
-                 * `rotation.from` and `rotation.to`.
+                 * `rotation.from` and `rotation.to`. Must be a number larger than 0.
                  */
                 orientations: 2,
                 /**
@@ -1095,7 +1098,9 @@
                 /** @ignore-option */
                 fontFamily: 'sans-serif',
                 /** @ignore-option */
-                fontWeight: '900'
+                fontWeight: '900',
+                /** @ignore-option */
+                whiteSpace: 'nowrap'
             },
             tooltip: {
                 followPointer: true,

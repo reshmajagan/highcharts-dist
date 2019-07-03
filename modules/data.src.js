@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Data module
  *
@@ -115,10 +115,12 @@
             }
 
             r.open(options.type.toUpperCase(), options.url, true);
-            r.setRequestHeader(
-                'Content-Type',
-                headers[options.dataType] || headers.text
-            );
+            if (!options.headers['Content-Type']) {
+                r.setRequestHeader(
+                    'Content-Type',
+                    headers[options.dataType] || headers.text
+                );
+            }
 
             H.objectEach(options.headers, function (val, key) {
                 r.setRequestHeader(key, val);
@@ -151,8 +153,32 @@
             r.send(options.data || true);
         };
 
+        /**
+         * Get a JSON resource over XHR, also supporting CORS without preflight.
+         *
+         * @function Highcharts.getJSON
+         *
+         * @param {string} url
+         *        The URL to load.
+         * @param {function} success
+         *        The success callback. For error handling, use the `Highcharts.ajax`
+         *        function instead.
+         */
+        H.getJSON = function (url, success) {
+            H.ajax({
+                url: url,
+                success: success,
+                dataType: 'json',
+                headers: {
+                    // Override the Content-Type to avoid preflight problems with CORS
+                    // in the Highcharts demos
+                    'Content-Type': 'text/plain'
+                }
+            });
+        };
+
     });
-    _registerModule(_modules, 'modules/data.src.js', [_modules['parts/Globals.js']], function (Highcharts) {
+    _registerModule(_modules, 'modules/data.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (Highcharts, U) {
         /* *
          * Data module
          *
@@ -236,14 +262,17 @@
 
 
 
+        var isNumber = U.isNumber;
+
+
         // Utilities
         var addEvent = Highcharts.addEvent,
             Chart = Highcharts.Chart,
             win = Highcharts.win,
             doc = win.document,
+            defined = Highcharts.defined,
             objectEach = Highcharts.objectEach,
             pick = Highcharts.pick,
-            isNumber = Highcharts.isNumber,
             merge = Highcharts.merge,
             splat = Highcharts.splat,
             fireEvent = Highcharts.fireEvent,
@@ -827,12 +856,24 @@
                             getValueCount(globalType),
                         seriesArr = (chartOptions && chartOptions.series) || [],
                         series = seriesArr[seriesIndex] || {},
-                        pointArrayMap = getPointArrayMap(series.type || globalType) ||
-                            ['y'];
+                        defaultPointArrayMap = getPointArrayMap(
+                            series.type || globalType
+                        ),
+                        pointArrayMap = defaultPointArrayMap || ['y'];
 
-                    // Add an x reader from the x property or from an undefined column
-                    // if the property is not set. It will then be auto populated later.
-                    builder.addColumnReader(mapping.x, 'x');
+                    if (
+                        // User-defined x.mapping
+                        defined(mapping.x) ||
+                        // All non cartesian don't need 'x'
+                        series.isCartesian ||
+                        // Except pie series:
+                        !defaultPointArrayMap
+                    ) {
+                        // Add an x reader from the x property or from an undefined
+                        // column if the property is not set. It will then be auto
+                        // populated later.
+                        builder.addColumnReader(mapping.x, 'x');
+                    }
 
                     // Add all column mappings
                     objectEach(mapping, function (val, name) {
@@ -2336,8 +2377,8 @@
                         }
                     };
                     // Apply it
-                    merge(true, this.options, options);
-                    this.init(this.options);
+                    merge(true, chart.options.data, options);
+                    this.init(chart.options.data);
                 }
             }
         });

@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * (c) 2009-2018 Torstein Honsi
  *
@@ -421,7 +421,7 @@
         H.Pane = Pane;
 
     });
-    _registerModule(_modules, 'parts-more/RadialAxis.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'parts-more/RadialAxis.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * (c) 2010-2019 Torstein Honsi
          *
@@ -430,13 +430,15 @@
 
 
 
+        var pInt = U.pInt;
+
+
         var addEvent = H.addEvent,
             Axis = H.Axis,
             extend = H.extend,
             merge = H.merge,
             noop = H.noop,
             pick = H.pick,
-            pInt = H.pInt,
             Tick = H.Tick,
             wrap = H.wrap,
             correctFloat = H.correctFloat,
@@ -1221,7 +1223,7 @@
         });
 
     });
-    _registerModule(_modules, 'parts-more/AreaRangeSeries.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'parts-more/AreaRangeSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  (c) 2010-2019 Torstein Honsi
@@ -1229,6 +1231,18 @@
          *  License: www.highcharts.com/license
          *
          * */
+
+        /**
+         * @interface Highcharts.PointOptionsObject
+         *//**
+         * Range series only. The high or maximum value for each data point.
+         * @name Highcharts.PointOptionsObject#high
+         * @type {number|undefined}
+         *//**
+         * Range series only. The low or minimum value for each data point.
+         * @name Highcharts.PointOptionsObject#low
+         * @type {number|undefined}
+         */
 
         /**
          * Extended data labels for range series types. Range series data labels use no
@@ -1290,10 +1304,12 @@
 
 
 
+        var isArray = U.isArray;
+
+
         var noop = H.noop,
             pick = H.pick,
             extend = H.extend,
-            isArray = H.isArray,
             defined = H.defined,
             Series = H.Series,
             seriesType = H.seriesType,
@@ -1771,6 +1787,18 @@
 
             setStackedPoints: noop
         }, {
+            /**
+             * Range series only. The high or maximum value for each data point.
+             * @name Highcharts.Point#high
+             * @type {number|undefined}
+             */
+
+            /**
+             * Range series only. The low or minimum value for each data point.
+             * @name Highcharts.Point#low
+             * @type {number|undefined}
+             */
+
             setState: function () {
                 var prevState = this.state,
                     series = this.series,
@@ -2630,7 +2658,7 @@
          */
 
     });
-    _registerModule(_modules, 'parts-more/GaugeSeries.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'parts-more/GaugeSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * (c) 2010-2019 Torstein Honsi
          *
@@ -2639,11 +2667,13 @@
 
 
 
-        var isNumber = H.isNumber,
-            merge = H.merge,
+        var isNumber = U.isNumber,
+            pInt = U.pInt;
+
+
+        var merge = H.merge,
             noop = H.noop,
             pick = H.pick,
-            pInt = H.pInt,
             Series = H.Series,
             seriesType = H.seriesType,
             TrackerMixin = H.TrackerMixin;
@@ -3989,7 +4019,7 @@
          */
 
     });
-    _registerModule(_modules, 'parts-more/WaterfallSeries.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'parts-more/WaterfallSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * (c) 2010-2019 Torstein Honsi
          *
@@ -3998,8 +4028,10 @@
 
 
 
+        var isNumber = U.isNumber;
+
+
         var correctFloat = H.correctFloat,
-            isNumber = H.isNumber,
             pick = H.pick,
             objectEach = H.objectEach,
             arrayMin = H.arrayMin,
@@ -4760,7 +4792,7 @@
             },
             // Pass the null test in ColumnSeries.translate.
             isValid: function () {
-                return isNumber(this.y, true) || this.isSum || this.isIntermediateSum;
+                return isNumber(this.y) || this.isSum || this.isIntermediateSum;
             }
 
         });
@@ -5012,7 +5044,7 @@
          */
 
     });
-    _registerModule(_modules, 'parts-more/BubbleLegend.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'parts-more/BubbleLegend.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * (c) 2010-2019 Highsoft AS
          *
@@ -5039,6 +5071,8 @@
 
 
 
+        var isNumber = U.isNumber;
+
         var Series = H.Series,
             Legend = H.Legend,
             Chart = H.Chart,
@@ -5046,7 +5080,6 @@
             addEvent = H.addEvent,
             wrap = H.wrap,
             color = H.color,
-            isNumber = H.isNumber,
             numberFormat = H.numberFormat,
             objectEach = H.objectEach,
             merge = H.merge,
@@ -6183,7 +6216,7 @@
         });
 
     });
-    _registerModule(_modules, 'parts-more/BubbleSeries.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'parts-more/BubbleSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * (c) 2010-2019 Torstein Honsi
          *
@@ -6196,14 +6229,16 @@
 
 
 
+        var isNumber = U.isNumber,
+            pInt = U.pInt;
+
+
         var arrayMax = H.arrayMax,
             arrayMin = H.arrayMin,
             Axis = H.Axis,
             color = H.color,
-            isNumber = H.isNumber,
             noop = H.noop,
             pick = H.pick,
-            pInt = H.pInt,
             Point = H.Point,
             Series = H.Series,
             seriesType = H.seriesType,
@@ -6697,7 +6732,7 @@
                         series.maxPxSize = Math.max(extremes.maxSize, extremes.minSize);
 
                         // Find the min and max Z
-                        zData = series.zData.filter(H.isNumber);
+                        zData = series.zData.filter(isNumber);
                         if (zData.length) { // #1735
                             zMin = pick(seriesOptions.zMin, Math.min(
                                 zMin,
@@ -8433,6 +8468,7 @@
                         if (chart.isInsidePlot(newPlotX, newPlotY)) {
                             point.plotX = newPlotX;
                             point.plotY = newPlotY;
+                            point.hasDragged = true;
 
                             this.redrawHalo(point);
 
@@ -8469,13 +8505,13 @@
              * @return {void}
              */
             onMouseUp: function (point) {
-                if (point.fixedPosition) {
+                if (point.fixedPosition && point.hasDragged) {
                     if (this.layout.enableSimulation) {
                         this.layout.start();
                     } else {
                         this.chart.redraw();
                     }
-                    point.inDragMode = false;
+                    point.inDragMode = point.hasDragged = false;
                     if (!this.options.fixedDraggable) {
                         delete point.fixedPosition;
                     }
@@ -8558,7 +8594,7 @@
         );
 
     });
-    _registerModule(_modules, 'parts-more/PackedBubbleSeries.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'parts-more/PackedBubbleSeries.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          *
          *  (c) 2010-2018 Grzegorz Blachlinski, Sebastian Bochan
@@ -8667,6 +8703,10 @@
          * @since 7.1.0
          */
 
+
+
+        var isArray = U.isArray,
+            isNumber = U.isNumber;
 
 
 
@@ -8917,7 +8957,7 @@
             {
                 /**
                  * Minimum bubble size. Bubbles will automatically size between the
-                 * `minSize` and `maxSize` to reflect the `z` value of each bubble.
+                 * `minSize` and `maxSize` to reflect the value of each bubble.
                  * Can be either pixels (when no unit is given), or a percentage of
                  * the smallest one of the plot width and height, divided by the square
                  * root of total number of points.
@@ -8932,7 +8972,7 @@
                 minSize: '10%',
                 /**
                  * Maximum bubble size. Bubbles will automatically size between the
-                 * `minSize` and `maxSize` to reflect the `z` value of each bubble.
+                 * `minSize` and `maxSize` to reflect the value of each bubble.
                  * Can be either pixels (when no unit is given), or a percentage of
                  * the smallest one of the plot width and height, divided by the square
                  * root of total number of points.
@@ -9205,7 +9245,7 @@
                     // when enabled allowOverlap.
                     if (!series.options.dataLabels.allowOverlap) {
                         series.data.forEach(function (point) {
-                            if (H.isArray(point.dataLabels)) {
+                            if (isArray(point.dataLabels)) {
                                 point.dataLabels.forEach(function (dataLabel) {
                                     dataLabels.push(dataLabel);
                                 });
@@ -9293,7 +9333,7 @@
                             bBox[3] = max(bBox[3], p.plotY + radius);
                         }
                     });
-                    return H.isNumber(bBox.width / bBox.height) ? bBox : null;
+                    return isNumber(bBox.width / bBox.height) ? bBox : null;
                 },
                 /**
                  * The function responsible for calculating the parent node radius
@@ -10102,7 +10142,7 @@
          *
          * @type      {Array<Object|Array>}
          * @extends   series.line.data
-         * @excluding marker
+         * @excluding marker, x, y
          * @sample    {highcharts} highcharts/series/data-array-of-objects/
          *            Config objects
          * @product   highcharts

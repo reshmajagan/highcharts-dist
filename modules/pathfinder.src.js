@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts Gantt JS v7.1.2-modified (2019-07-03)
  *
  * Pathfinder
  *
@@ -1792,7 +1792,8 @@
                     }
                 }
 
-                attribs.class = 'highcharts-point-connecting-path ' +
+                attribs['class'] = // eslint-disable-line dot-notation
+                    'highcharts-point-connecting-path ' +
                     'highcharts-color-' + fromPoint.colorIndex;
                 options = merge(attribs, options);
 
@@ -1905,7 +1906,7 @@
                 // Rebuild pathfinder connections from options
                 pathfinder.connections = [];
                 chart.series.forEach(function (series) {
-                    if (series.visible) {
+                    if (series.visible && !series.options.isInternal) {
                         series.points.forEach(function (point) {
                             var to,
                                 connects = (
@@ -2046,7 +2047,7 @@
                     calculatedMargin;
 
                 for (var i = 0, sLen = series.length; i < sLen; ++i) {
-                    if (series[i].visible) {
+                    if (series[i].visible && !series[i].options.isInternal) {
                         for (
                             var j = 0, pLen = series[i].points.length, bb, point;
                             j < pLen;

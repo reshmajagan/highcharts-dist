@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Highcharts Drilldown module
  *
@@ -559,7 +559,15 @@
                         levelSeriesOptions = last.levelSeriesOptions;
                     } else {
                         levelSeries.push(series);
-                        levelSeriesOptions.push(series.options);
+
+                        // (#10597)
+                        series.purgedOptions = H.merge({
+                            _ddSeriesId: series.options._ddSeriesId,
+                            _levelNumber: series.options._levelNumber,
+                            selected: series.options.selected
+                        }, series.userOptions);
+
+                        levelSeriesOptions.push(series.purgedOptions);
                     }
                 }
             });
@@ -568,6 +576,7 @@
             level = extend({
                 levelNumber: levelNumber,
                 seriesOptions: oldSeries.options,
+                seriesPurgedOptions: oldSeries.purgedOptions,
                 levelSeriesOptions: levelSeriesOptions,
                 levelSeries: levelSeries,
                 shapeArgs: point.shapeArgs,
@@ -735,7 +744,8 @@
                     ) {
                         addedSeries.animate = addedSeries.animateDrillupTo;
                     }
-                    if (seriesOptions === level.seriesOptions) {
+
+                    if (seriesOptions === level.seriesPurgedOptions) {
                         newSeries = addedSeries;
                     }
                 };

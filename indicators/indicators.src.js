@@ -1,5 +1,5 @@
 /**
- * @license  Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highstock JS v7.1.2-modified (2019-07-03)
  *
  * Indicator series type for Highstock
  *
@@ -77,7 +77,7 @@
 
         return requiredIndicatorMixin;
     });
-    _registerModule(_modules, 'indicators/indicators.src.js', [_modules['parts/Globals.js'], _modules['mixins/indicator-required.js']], function (H, requiredIndicatorMixin) {
+    _registerModule(_modules, 'indicators/indicators.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['mixins/indicator-required.js']], function (H, U, requiredIndicatorMixin) {
         /* *
          *
          *  License: www.highcharts.com/license
@@ -86,10 +86,12 @@
 
 
 
+        var isArray = U.isArray;
+
+
         var pick = H.pick,
             error = H.error,
             Series = H.Series,
-            isArray = H.isArray,
             addEvent = H.addEvent,
             seriesType = H.seriesType,
             seriesTypes = H.seriesTypes,

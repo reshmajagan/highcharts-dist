@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * (c) 2009-2019 Torstein Honsi
  *
@@ -26,7 +26,7 @@
             obj[path] = fn.apply(null, args);
         }
     }
-    _registerModule(_modules, 'modules/series-label.src.js', [_modules['parts/Globals.js']], function (H) {
+    _registerModule(_modules, 'modules/series-label.src.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js']], function (H, U) {
         /* *
          * (c) 2009-2019 Torstein Honsi
          *
@@ -67,10 +67,12 @@
 
 
 
+        var isNumber = U.isNumber;
+
+
         var labelDistance = 3,
             addEvent = H.addEvent,
             extend = H.extend,
-            isNumber = H.isNumber,
             pick = H.pick,
             Series = H.Series,
             SVGRenderer = H.SVGRenderer,

@@ -27,7 +27,11 @@
 'use strict';
 
 import H from '../parts/Globals.js';
-import '../parts/Utilities.js';
+
+import U from '../parts/Utilities.js';
+var isArray = U.isArray,
+    isNumber = U.isNumber;
+
 import '../parts/Color.js';
 import '../parts/Options.js';
 import '../parts/Legend.js';
@@ -38,12 +42,10 @@ import '../parts/ScatterSeries.js';
 var colorPointMixin = H.colorPointMixin,
     colorSeriesMixin = H.colorSeriesMixin,
     extend = H.extend,
-    isNumber = H.isNumber,
     LegendSymbolMixin = H.LegendSymbolMixin,
     merge = H.merge,
     noop = H.noop,
     pick = H.pick,
-    isArray = H.isArray,
     Point = H.Point,
     Series = H.Series,
     seriesType = H.seriesType,

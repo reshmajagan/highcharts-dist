@@ -1013,11 +1013,10 @@ H.defaultOptions = {
              *         Theming the button
              *
              * @type {Highcharts.SVGAttributes}
-             * @default {"zIndex":6}
              * @since 2.2
              */
             theme: {
-                /** @ignore-option */
+                /** @internal */
                 zIndex: 6
             },
             /**
@@ -2689,6 +2688,13 @@ H.defaultOptions = {
          * @apioption tooltip.borderColor
          */
         /**
+         * A CSS class name to apply to the tooltip's container div,
+         * allowing unique CSS styling for each chart.
+         *
+         * @type      {string}
+         * @apioption tooltip.className
+         */
+        /**
          * Since 4.1, the crosshair definitions are moved to the Axis object
          * in order for a better separation from the tooltip. See
          * [xAxis.crosshair](#xAxis.crosshair)<a>.</a>
@@ -3363,17 +3369,16 @@ H.defaultOptions = {
          *         Left aligned
          *
          * @type    {Highcharts.AlignObject}
-         * @default {"align": "right", "verticalAlign": "bottom", "x": -10, "y": -5}
          * @since   2.1
          */
         position: {
-            /** @ignore-option */
+            /** @internal */
             align: 'right',
-            /** @ignore-option */
+            /** @internal */
             x: -10,
-            /** @ignore-option */
+            /** @internal */
             verticalAlign: 'bottom',
-            /** @ignore-option */
+            /** @internal */
             y: -5
         },
         /**

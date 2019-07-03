@@ -104,8 +104,10 @@ declare module "../highcharts" {
      *
      * @param vertical
      *        If vertical scrollbar, swap x-y values.
+     *
+     * @return Rotated path.
      */
-    function swapXY(path: Array<(number|string)>, vertical: boolean): Array<(number|string)>;
+    function swapXY(path: SVGPathArray, vertical: boolean): SVGPathArray;
     /**
      * Returns the first break found where the x is larger then break.from and
      * smaller then break.to.

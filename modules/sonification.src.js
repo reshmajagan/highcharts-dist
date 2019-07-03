@@ -1,5 +1,5 @@
 /**
- * @license Highcharts JS v7.1.2 (2019-06-04)
+ * @license Highcharts JS v7.1.2-modified (2019-07-03)
  *
  * Sonification module
  *
@@ -1512,7 +1512,7 @@
 
         return pointSonifyFunctions;
     });
-    _registerModule(_modules, 'modules/sonification/chartSonify.js', [_modules['parts/Globals.js'], _modules['modules/sonification/utilities.js']], function (H, utilities) {
+    _registerModule(_modules, 'modules/sonification/chartSonify.js', [_modules['parts/Globals.js'], _modules['parts/Utilities.js'], _modules['modules/sonification/utilities.js']], function (H, U, utilities) {
         /* *
          *
          *  (c) 2009-2019 Øystein Moseng
@@ -1608,6 +1608,9 @@
          * @type {Function|undefined}
          */
 
+
+
+        var isArray = U.isArray;
 
 
 
@@ -1912,7 +1915,7 @@
                     earcons: chartSonifyOptions.earcons
                 },
                 // Merge in the specific series options by ID
-                H.isArray(seriesOptions) ? (
+                isArray(seriesOptions) ? (
                     H.find(seriesOptions, function (optEntry) {
                         return optEntry.id === H.pick(series.id, series.options.id);
                     }) || {}

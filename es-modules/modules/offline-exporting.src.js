@@ -697,7 +697,7 @@ Highcharts.Chart.prototype.exportChartLocal = function (
 
 // Extend the default options to use the local exporter logic
 merge(true, Highcharts.getOptions().exporting, {
-    libURL: 'https://code.highcharts.com/@product.version@/lib/',
+    libURL: 'https://code.highcharts.com/7.1.2-modified/lib/',
 
     // When offline-exporting is loaded, redefine the menu item definitions
     // related to download.
